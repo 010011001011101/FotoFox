@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Drawing;
+using System.ComponentModel;
 
 namespace FotoFox.Logic
 {
@@ -9,6 +10,7 @@ namespace FotoFox.Logic
     private readonly Control _HostControl;
     private SplitterManager _SplitterManager;
     private ImageManager _ImageManager;
+    private Control _ContextMenuSourceControl;
 
 
     public ContextMenuManager(Control hostControl)
@@ -35,6 +37,8 @@ namespace FotoFox.Logic
       _CommonToContextMenu(menu);
       _AddSpliterToContextMenu(menu);
       _AddImageToContextMenu(menu);
+
+      menu.Opening += Menu_Opening;
       return menu;
     }
 
@@ -50,6 +54,8 @@ namespace FotoFox.Logic
       _AddSpliterToContextMenu(menu);
       _FullImageModeToContextMenu(menu);
       _RemoveImageToContextMenu(menu);
+
+      menu.Opening += Menu_Opening;
       return menu;
     }
 
@@ -62,6 +68,8 @@ namespace FotoFox.Logic
     {
       var menu = _CreateContextMenu();
       _SplitControlToContextMenu(menu);
+
+      menu.Opening += Menu_Opening;
       return menu;
     }
 
@@ -78,6 +86,8 @@ namespace FotoFox.Logic
       _SplitControlToContextMenu(menu);
       _AddSpliterToContextMenu(menu);
       _AddImageToContextMenu(menu);
+
+      menu.Opening += Menu_Opening;
       return menu;
     }
 
@@ -93,10 +103,16 @@ namespace FotoFox.Logic
       _AddSpliterToContextMenu(menu);
       _SplitControlToContextMenu(menu);
       _AddSpliterToContextMenu(menu);
-      _RemoveImageToContextMenu(menu);
-      _AddSpliterToContextMenu(menu);
       _FullImageModeToContextMenu(menu);
+      _RemoveImageToContextMenu(menu);
+      
+      menu.Opening += Menu_Opening;
       return menu;
+    }
+
+    private void Menu_Opening(object sender, CancelEventArgs e)
+    {
+      _ContextMenuSourceControl = ((ContextMenuStrip)sender).SourceControl as Control;
     }
 
     #endregion
@@ -122,7 +138,7 @@ namespace FotoFox.Logic
     private void _FullImageModeToContextMenu(ContextMenuStrip contextMenu)
     {
       contextMenu.Items.Add(
-        new ToolStripMenuItem("Растянуть оригинальное изображение", null,
+        new ToolStripMenuItem("Растянуть оригинальное изображение", Properties.Resources.resize,
           (s, e) => _ImageMenuAction(s, _ImageManager.SetFullImageMode))
       );  
     }
@@ -146,7 +162,7 @@ namespace FotoFox.Logic
 
       subMenu.DropDownItems.Add(new ToolStripSeparator());
 
-      subMenu.DropDownItems.Add(new ToolStripMenuItem("Удалить", null, (s,e) =>
+      subMenu.DropDownItems.Add(new ToolStripMenuItem("Удалить", Properties.Resources.remove, (s,e) =>
               _SplitterManager.DeleteSplitter(_GetSplitter(s))));
 
       contextMenu.Items.Add(subMenu);
@@ -181,8 +197,8 @@ namespace FotoFox.Logic
     {
       var cMenu = new ContextMenuStrip();
 
-      //cMenu.Popup += (s, e) => _SplitterManager.SetSelectionBorder(_GetControl(s), true);
-      //cMenu.Collapse += (s, e) => _SplitterManager.SetSelectionBorder(_GetControl(s), false);
+      cMenu.Opening += (s, e) => _SplitterManager.SetSelectionBorder(((ContextMenuStrip)s).SourceControl as Control, true);
+      cMenu.Closing += (s, e) => _SplitterManager.SetSelectionBorder(_GetControl(s), false);
 
       return cMenu;
     }
@@ -193,7 +209,7 @@ namespace FotoFox.Logic
 
     private void _ImageMenuAction(object sender, Func<Panel, ExPictureBox.ExPictureBox, bool> imageActionDelegate)
     {
-      var menuItem = sender as MenuItem;
+      var menuItem = sender as ToolStripMenuItem;
       var panel = _GetSplitterPanel(sender);
       var pictureBox = _GetPictureBox(panel);
 
@@ -214,7 +230,7 @@ namespace FotoFox.Logic
       return panel.Controls[0] as ExPictureBox.ExPictureBox;
     }
 
-    private static SplitContainer _GetSplitter(object sender)
+    private SplitContainer _GetSplitter(object sender)
     {
       var panel = _GetControl(sender);
       while (panel != null && !(panel is SplitContainer))
@@ -223,18 +239,10 @@ namespace FotoFox.Logic
       return panel as SplitContainer;
     }
 
-    private static Control _GetControl(object sender)
+    private Control _GetControl(object sender)
     {
-      if (sender is ContextMenuStrip)
-         return (sender as ContextMenuStrip).SourceControl;
-
-      if (sender is ToolStripItem)
-        return _GetControl((sender as ToolStripItem).GetCurrentParent());
-
-      if (sender is ToolStripDropDown)
-        return _GetControl((sender as ToolStripDropDown).OwnerItem);
-
-      return null;
+      // ибо нормального спсоба узнать контрол источник контекстного меню, в котором есть подменю - нельзя... ппц товарищи
+      return _ContextMenuSourceControl;
     }
 
     #endregion
