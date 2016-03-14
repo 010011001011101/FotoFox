@@ -6,11 +6,11 @@ namespace FotoFox.ExPictureBox
   public class ExRectangle
   {
     private RectangleF _Rectangle;
-    private int _ImageWidth;
-    private int _ImageHeight;
+    private readonly int _ImageWidth;
+    private readonly int _ImageHeight;
 
-    private const float _MIN_HEIGHT = 30;
-    private const float _MIN_WIDTH = 30;
+    private const float MinHeight = 30;
+    private const float MinWidth = 30;
 
     public float CurrentZoom = 1;
 
@@ -35,7 +35,7 @@ namespace FotoFox.ExPictureBox
 
       var newHeight = _Rectangle.Height * multi;
       var newWidth = _Rectangle.Width * multi;
-      if (newWidth < _MIN_WIDTH || newHeight < _MIN_HEIGHT)
+      if (newWidth < MinWidth || newHeight < MinHeight)
         return;
 
        CurrentZoom *= multi;
@@ -57,10 +57,8 @@ namespace FotoFox.ExPictureBox
       var newX = _Rectangle.X - byX;
       var newY = _Rectangle.Y - byY;
 
-      //if (newX < 0) newX = 0;
       if (newX > _ImageWidth) newX = _ImageWidth;
 
-      //if (newY < 0) newY = 0;
       if (newY > _ImageHeight) newY = _ImageHeight;
 
       _Rectangle.Location = new PointF(newX, newY);

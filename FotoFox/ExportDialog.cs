@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -11,11 +12,10 @@ namespace FotoFox
 {
   public partial class ExportDialog : Form
   {
-    private const string _DEFAULT_FILE_NAME = "FoxImage";
-    private const float _DEFAULTMAX_INCREASE_PERCENT = 1000;
+    private const string DefaultFileName = "FoxImage";
+    private const float DefaultmaxIncreasePercent = 1000;
 
-
-    private Panel _Panel;
+    private Control _ImageHostControl;
 
     private int _DefaultHeight;
     private int _DefaultWidth;
@@ -24,15 +24,13 @@ namespace FotoFox
     private int _MaxHeight;
     private int _MaxWidth;
 
-    private bool _IgnoreSizeChangesEvents;
-
-    public static void ShowDialog(Panel panel, IWin32Window parentWindow)
+    public static void ShowDialog(Control imageHostControl, IWin32Window parentWindow)
     {
-      if (panel == null) return;
+      if (imageHostControl == null) return;
 
       using (var dialog = new ExportDialog())
       {
-        dialog._Panel = panel;
+        dialog._ImageHostControl = imageHostControl;
         dialog._Initialize();
         dialog.ShowDialog(parentWindow);
       }
@@ -47,22 +45,22 @@ namespace FotoFox
 
     private void _Initialize()
     {
-      _DefaultHeight = _Panel.Height;
-      _DefaultWidth = _Panel.Width;
+      _DefaultHeight = _ImageHostControl.Height;
+      _DefaultWidth = _ImageHostControl.Width;
       _DefaultProportion = (decimal)_DefaultHeight / _DefaultWidth;
 
-      _IgnoreSizeChangesEvents = true;
-      HeightText.Value = _DefaultHeight;
-      WidthText.Value = _DefaultWidth;
-      _IgnoreSizeChangesEvents = false;
-
-      var maxIncreasePercent = (int)_GetMaxIncreasePercent(_Panel);
-      SizeTrackBar.Maximum += maxIncreasePercent;
+      SizeTrackBar.Maximum += (int)_GetMaxIncreasePercent(_ImageHostControl);
 
       _MaxHeight = (int)((decimal)_DefaultHeight * SizeTrackBar.Maximum / 100);
       _MaxWidth = (int)((decimal)_DefaultWidth * SizeTrackBar.Maximum / 100);
 
-      FilePathText.Text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), _DEFAULT_FILE_NAME);
+      _SizeChangeAction(() =>
+      {
+        HeightText.Value = _DefaultHeight;
+        WidthText.Value = _DefaultWidth;
+      });
+
+      FilePathText.Text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), DefaultFileName);
       _InitializeImageFormat();
     }
 
@@ -78,23 +76,12 @@ namespace FotoFox
       ImageFormatCMB.SelectedIndex = 0;
     }
 
-    private static float _GetMaxIncreasePercent(Panel panel)
+    private static float _GetMaxIncreasePercent(Control control)
     {
-      if (panel.Controls.Count == 0)
-        return _DEFAULTMAX_INCREASE_PERCENT;
-      var inerControl = panel.Controls[0];
-
-      if (inerControl is ExPictureBox.ExPictureBox)
-        return (inerControl as ExPictureBox.ExPictureBox).GetMaxIncreasePercent();
-
-      if (inerControl is SplitContainer)
-      {
-        var panel1MaxPercent = _GetMaxIncreasePercent((inerControl as SplitContainer).Panel1);
-        var panel2MaxPercent = _GetMaxIncreasePercent((inerControl as SplitContainer).Panel2);
-        return Math.Min(panel1MaxPercent, panel2MaxPercent);
-      }
-
-      return 0;
+      return _GetAllExPictureBox(control).
+              Select(pb => pb.GetMaxIncreasePercent()).
+              DefaultIfEmpty(DefaultmaxIncreasePercent).
+              Min();
     }
 
     #endregion
@@ -120,6 +107,7 @@ namespace FotoFox
       _SizeChangeAction(() => HeightText.Value = (int)(WidthText.Value*_DefaultProportion));
     }
 
+    private bool _IgnoreSizeChangesEvents;
     private void _SizeChangeAction(Action action)
     {
       if (_IgnoreSizeChangesEvents) return;
@@ -137,16 +125,16 @@ namespace FotoFox
       {
         MessageBox.Show(string.Format("Выбранны размер ({0} на {1}) превышает максимальный допустимый ({2} на {3}).{4}Некоторая часть изображения будет растянута.",
           WidthText.Value, HeightText.Value, _MaxWidth, _MaxHeight, Environment.NewLine),
-          "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+          @"Внимание!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
-        HeightText.ForeColor = Color.Red;
+        HeightText.ForeColor = 
         WidthText.ForeColor = Color.Red;
       }
-      else if (HeightText.ForeColor == Color.Red || WidthText.ForeColor == Color.Red)
-       {
-         HeightText.ResetForeColor();
-         WidthText.ResetForeColor();
-       }
+      else
+      {
+        HeightText.ResetForeColor();
+        WidthText.ResetForeColor();
+      }
     }
 
     #endregion
@@ -170,7 +158,7 @@ namespace FotoFox
       {
       }
 
-      FilePathText.Text = Path.Combine(selectedPath, fileName ?? _DEFAULT_FILE_NAME);
+      FilePathText.Text = Path.Combine(selectedPath, fileName ?? DefaultFileName);
       _UpdateExtension();
     }
 
@@ -212,32 +200,13 @@ namespace FotoFox
 
     #region Export
 
-    private class ExportParams
-    {
-      public Panel Panel { get; private set; }
-      public FileInfo FileInfo { get; private set; }
-      public ImageFormat ImageFormat { get; private set; }
-      public Size Size { get; private set; }
-      public float Coef { get; private set; }
-
-
-      public ExportParams(Panel panel, FileInfo fileInfo, ImageFormat imageFormat, Size size, float coef)
-      {
-        Panel = panel;
-        Size = size;
-        FileInfo = fileInfo;
-        ImageFormat = imageFormat;
-        Coef = coef;
-      }
-    }
-
     private void ExportBtn_Click(object sender, EventArgs e)
     {
         var fileInfo = new FileInfo(FilePathText.Text);
         if (!_CheckFilePath(fileInfo)) return;
 
-        var exportParams = new ExportParams(
-            _Panel,
+        var exportParams = new ExportManager.ExportParams(
+            _ImageHostControl,
             fileInfo,
             ((KeyValuePair<string, ImageFormat>) ImageFormatCMB.SelectedItem).Value,
             new Size((int) WidthText.Value, (int) HeightText.Value),
@@ -247,17 +216,17 @@ namespace FotoFox
         ExportWorker.RunWorkerAsync(exportParams);
     }
 
-    private bool _CheckFilePath(FileInfo fileInfo)
+    private static bool _CheckFilePath(FileInfo fileInfo)
     {
       if (!fileInfo.Directory.Exists)
       {
-        MessageBox.Show("Указанной папки не существует!", "Внимание!", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+        MessageBox.Show(@"Указанной папки не существует!", @"Внимание!", MessageBoxButtons.OK, MessageBoxIcon.Stop);
         return false;
       }
 
       if (fileInfo.Exists)
         return DialogResult.Yes ==
-          MessageBox.Show("Указанный файл уже существует. Перезаписать?", "Внимание!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+          MessageBox.Show(@"Указанный файл уже существует. Перезаписать?", @"Внимание!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
       return true;
     }
@@ -271,8 +240,8 @@ namespace FotoFox
     {
       BrowseBtn.Enabled = FilePathText.Enabled = ImageFormatCMB.Enabled = ExportBtn.Enabled = SizeGB.Enabled = false;
       CancelBtn.Enabled = true;
-      ExportProgress.Maximum = _GetImagesCount(_Panel) + 3;
-      Text += " (Экспортируется...)";
+      ExportProgress.Maximum = _GetImagesCount(_ImageHostControl) + 3;
+      Text += @" (Экспортируется...)";
     }
 
     private void _OnEndExport()
@@ -283,23 +252,9 @@ namespace FotoFox
       Text = Text.Replace(" (Экспортируется...)", string.Empty);
     }
 
-    private static int _GetImagesCount(Panel panel)
+    private static int _GetImagesCount(Control control)
     {
-      if (panel.Controls.Count == 0)
-        return 0;
-      var inerControl = panel.Controls[0];
-
-      if (inerControl is ExPictureBox.ExPictureBox)
-        return 1;
-
-      if (inerControl is SplitContainer)
-      {
-        var panel1Count = _GetImagesCount((inerControl as SplitContainer).Panel1);
-        var panel2Count = _GetImagesCount((inerControl as SplitContainer).Panel2);
-        return panel1Count + panel2Count;
-      }
-
-      return 0;
+      return _GetAllExPictureBox(control).Count();
     }
 
     #region Worker
@@ -315,20 +270,20 @@ namespace FotoFox
 
       if(e.Error != null)
       {
-        MessageBox.Show(e.Error.Message, "Ошибка Экспорта!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show(e.Error.Message, @"Ошибка Экспорта!", MessageBoxButtons.OK, MessageBoxIcon.Error);
         return;
       }
 
       if(!e.Cancelled)
-        MessageBox.Show("Картинка успешно создана!", "Ура!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        MessageBox.Show(@"Картинка успешно создана!", @"Ура!", MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
 
     private void ExportWorker_DoWork(object sender, DoWorkEventArgs e)
     {
-      var parameters = e.Argument as ExportParams;
-      var worker = sender as BackgroundWorker;
+      var parameters = (ExportManager.ExportParams)e.Argument;
+      var worker = (BackgroundWorker)sender;
 
-      ExportManager.Export(worker, parameters.Panel, parameters.Size, parameters.FileInfo, parameters.ImageFormat, parameters.Coef);
+      ExportManager.Export(worker, parameters);
 
       if (worker.CancellationPending)
         e.Cancel = true;
@@ -337,5 +292,25 @@ namespace FotoFox
     #endregion
 
     #endregion
+
+    private static IEnumerable<ExPictureBox.ExPictureBox> _GetAllExPictureBox(Control control)
+    {
+      if (control.Controls.Count == 0)
+        yield break;
+
+      var inerControl = control.Controls[0];
+
+      if (inerControl is ExPictureBox.ExPictureBox)
+        yield return (inerControl as ExPictureBox.ExPictureBox);
+
+      if (inerControl is SplitContainer)
+      {
+        foreach (var pictureBox in _GetAllExPictureBox((inerControl as SplitContainer).Panel1))
+          yield return pictureBox;
+
+        foreach (var pictureBox in _GetAllExPictureBox((inerControl as SplitContainer).Panel2))
+          yield return pictureBox;
+      }
+    }
   }
 }

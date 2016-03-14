@@ -244,6 +244,7 @@
       // CancelBtn
       // 
       this.CancelBtn.Anchor = System.Windows.Forms.AnchorStyles.Left;
+      this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
       this.CancelBtn.Enabled = false;
       this.CancelBtn.Location = new System.Drawing.Point(694, 101);
       this.CancelBtn.Name = "CancelBtn";
@@ -270,9 +271,13 @@
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.CancelButton = this.CancelBtn;
       this.ClientSize = new System.Drawing.Size(774, 129);
       this.Controls.Add(this.TableLayoutPanel);
+      this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+      this.MaximizeBox = false;
+      this.MinimizeBox = false;
       this.Name = "ExportDialog";
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
       this.Text = "Экспорт в картинку";
