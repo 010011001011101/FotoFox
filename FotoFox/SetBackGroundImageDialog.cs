@@ -6,16 +6,16 @@ namespace FotoFox
 {
   public partial class SetBackGroundImageDialog : Form
   {
-    private Panel _Panel;
+    private Control _ControlForBackground;
 
-    public static void ShowDialog(Panel panel, IWin32Window parentWindow)
+    public static void ShowDialog(Control controlForBackground, IWin32Window parent)
     {
-      if(panel == null) return;
+      if (controlForBackground == null) return;
 
       using (var dialog = new SetBackGroundImageDialog())
       {
-        dialog._Panel = panel;
-        dialog.ShowDialog(parentWindow);
+        dialog._ControlForBackground = controlForBackground;
+        dialog.ShowDialog(parent);
       }
     }
 
@@ -26,7 +26,7 @@ namespace FotoFox
 
     private void ChooseBtn_Click(object sender, EventArgs e)
     {
-      if(_TryChangeBackground(_Panel))
+      if(_TryChangeBackground(_ControlForBackground))
         Close();
     }
 
@@ -37,42 +37,37 @@ namespace FotoFox
 
     private void BrowseBtn_Click(object sender, EventArgs e)
     {
-      using (var dialog = new OpenFileDialog
-      {
-        CheckFileExists = true,
-        Title = "Открыть картинку"
-
-      })
-      {
-        if (dialog.ShowDialog(this) != DialogResult.OK)
-          return;
-
-        FileNameTB.Text = dialog.FileName;
-      }
+      using (var dialog = new OpenFileDialog{ CheckFileExists = true, Title = @"Открыть картинку" })
+        if (dialog.ShowDialog(this) == DialogResult.OK)
+          FileNameTB.Text = dialog.FileName;
     }
 
-    private bool _TryChangeBackground(Panel panel)
+    private bool _TryChangeBackground(Control panel)
     {
-      Image image;
+      var image = _TryGetImage();
+      if (image == null) return false;
+
+      if (panel.BackgroundImage != null)
+        panel.BackgroundImage.Dispose();
+
+      panel.BackgroundImageLayout = StretchRB.Checked ? ImageLayout.Stretch : ImageLayout.Tile;
+      panel.BackgroundImage = image;
+
+      return true;
+    }
+
+    private Image _TryGetImage()
+    {
       try
       {
-        image = Image.FromFile(FileNameTB.Text);
+        return Image.FromFile(FileNameTB.Text);
       }
       catch (Exception)
       {
         MessageBox.Show(string.Format("Не удалось прочитать файл {0} как картинку", FileNameTB.Text),
-          "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        return false;
+          @"Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        return null;
       }
-
-      if (panel.BackgroundImage != null)
-      {
-        panel.BackgroundImage.Dispose();
-        panel.BackgroundImage = null;
-      }
-      panel.BackgroundImageLayout = StretchRB.Checked ? ImageLayout.Stretch : ImageLayout.Tile;
-      panel.BackgroundImage = image;
-      return true;
     }
   }
 }

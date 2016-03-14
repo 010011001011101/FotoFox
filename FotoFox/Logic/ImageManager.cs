@@ -1,89 +1,84 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Forms;
 
 namespace FotoFox.Logic
 {
-    public class ImageManager
+  public class ImageManager
+  {
+    private readonly Control _HostControl;
+    private ContextMenuManager _ContextMenuManager;
+
+
+    public ImageManager(Control hostControl)
     {
-        private readonly Panel _mainPanel;
-
-        public ContextMenuManager ContextMenuManager { get; set; }
-
-        public ImageManager(Panel mainPanel)
-        {
-            _mainPanel = mainPanel;
-        }
-
-        public void AddImage(Panel panel, Image image = null)
-        {
-            if (panel == null) return;
-
-            if (image == null) image = AskForImage();
-            if (image == null) return;
-
-            var isMainPanel = _mainPanel.Equals(panel);
-            panel.Controls.Add(CreatePictureBox(image, isMainPanel));
-            panel.ContextMenu = null;
-        }
-
-        public bool DeleteImage(Panel panel)
-        {
-          if (panel == null || panel.Controls.Count == 0) return false;
-          var pictureBox = panel.Controls[0] as ExPictureBox.ExPictureBox;
-          if (pictureBox == null) return false;
-
-          var isMainPanel = _mainPanel.Equals(panel);
-          panel.ContextMenu = isMainPanel
-              ? ContextMenuManager.PanelContextMenu
-              : ContextMenuManager.SplitPanelContextMenu;
-          panel.Controls.Remove(pictureBox);
-          pictureBox.Dispose();
-
-          return false;
-        }
-
-        public bool SetFullImageMode(Panel panel, ExPictureBox.ExPictureBox pictureBox)
-        {
-          pictureBox.FullImageMode = !pictureBox.FullImageMode;
-          return pictureBox.FullImageMode;
-        }
-
-        private Control CreatePictureBox(Image image, bool fromMainPanel)
-        {
-          var pictureBox = new ExPictureBox.ExPictureBox(image)
-            {
-                Dock = DockStyle.Fill,
-                ContextMenu = fromMainPanel
-                    ? ContextMenuManager.ImageContextMenu
-                    : ContextMenuManager.SplitImagePanelContextMenu
-            };
-
-          DragDropManager.InitForControl(pictureBox, pictureBox.ResetImage);
-
-          return pictureBox;
-        }
-
-        private Image AskForImage()
-        {
-            using (var dialog = new OpenFileDialog
-            { 
-                CheckFileExists = true,
-                Title = "Открыть картинку"
-
-            })
-            {
-                if (dialog.ShowDialog(_mainPanel.Parent) != DialogResult.OK)
-                    return null;
-                try
-                {
-                    return Image.FromFile(dialog.FileName);
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
-            }
-        }
+      _HostControl = hostControl;
     }
+
+    public void Initialize(ContextMenuManager contextMenuManager)
+    {
+      _ContextMenuManager = contextMenuManager;
+    }
+
+    public void AddImage(Control control, Image image = null)
+    {
+      if (control == null) return;
+
+        if (image == null) image = _AskForImage();
+        if (image == null) return;
+
+        var isMainPanel = _HostControl.Equals(control);
+        control.Controls.Add(_CreatePictureBox(image, isMainPanel));
+        control.ContextMenu = null;
+    }
+
+    public void DeleteImage(Control control)
+    {
+      if (control == null || control.Controls.Count == 0) return;
+      var pictureBox = control.Controls[0] as ExPictureBox.ExPictureBox;
+      if (pictureBox == null) return;
+
+      var isMainPanel = _HostControl.Equals(control);
+      control.ContextMenu = isMainPanel
+          ? _ContextMenuManager.PanelContextMenu
+          : _ContextMenuManager.SplitPanelContextMenu;
+      control.Controls.Remove(pictureBox);
+
+      pictureBox.Dispose();
+    }
+
+    public bool SetFullImageMode(Panel panel, ExPictureBox.ExPictureBox pictureBox)
+    {
+      return pictureBox.FullImageMode = !pictureBox.FullImageMode;
+    }
+
+    private Control _CreatePictureBox(Image image, bool fromMainPanel)
+    {
+      var pictureBox = new ExPictureBox.ExPictureBox(image)
+        {
+            Dock = DockStyle.Fill,
+            ContextMenu = fromMainPanel
+                ? _ContextMenuManager.ImageContextMenu
+                : _ContextMenuManager.SplitImagePanelContextMenu
+        };
+
+      DragDropManager.InitForControl(pictureBox, pictureBox.ResetImage);
+
+      return pictureBox;
+    }
+
+    private Image _AskForImage()
+    {
+      using (var dialog = new OpenFileDialog{ CheckFileExists = true, Title = @"Открыть картинку" })
+        try
+        {
+          if (dialog.ShowDialog(_HostControl) == DialogResult.OK)
+            return Image.FromFile(dialog.FileName);
+        }
+        catch
+        {
+        }
+
+      return null;
+    }
+  }
 }

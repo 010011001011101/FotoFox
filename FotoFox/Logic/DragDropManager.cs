@@ -32,7 +32,7 @@ namespace FotoFox.Logic
 
     private static Image _GetImageFromDrop(IDataObject data)
     {
-      var files = data.GetData(DataFormats.FileDrop) as string[];
+      var files = (string[])data.GetData(DataFormats.FileDrop);
       if (files.Length == 0) return null;
 
       try

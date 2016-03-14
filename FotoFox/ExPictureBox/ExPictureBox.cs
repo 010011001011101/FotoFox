@@ -6,7 +6,7 @@ namespace FotoFox.ExPictureBox
 {
   public class ExPictureBox : Panel
   {
-    public Image _Image;
+    private Image _Image;
     private ExRectangle _VisibleRect;
     private Point _MouseStartDragPoint;
     private bool _IgnoreFirstMouseMove = true;//TODO Убрать индусизм
@@ -154,7 +154,6 @@ namespace FotoFox.ExPictureBox
 
     #region MaxIncreasePercent
 
-
     public float GetMaxIncreasePercent()
     {
       var imagePartSize = FullImageMode
@@ -167,14 +166,14 @@ namespace FotoFox.ExPictureBox
       return Math.Min(byX, byY);
     }
 
-    private float _CalculateMaxPercent(int imageSize, int controlSize)
+    private static float _CalculateMaxPercent(int imageSize, int controlSize)
     {
       return controlSize < imageSize
         ? 100 * (imageSize - controlSize) / controlSize
         : 0;
     }
 
-        #endregion
+    #endregion
 
     protected override void Dispose(bool disposing)
     {

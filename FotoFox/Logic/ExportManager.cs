@@ -10,34 +10,52 @@ namespace FotoFox.Logic
 {
   public class ExportManager
   {
-      public static void Export(BackgroundWorker worker, Panel panel, Size imageSize, FileInfo fileInfo, ImageFormat imageFormat, float coef)
+    public class ExportParams
     {
-      using (var bitmap = new Bitmap(imageSize.Width, imageSize.Height))
+      public Control ImageHostControl { get; private set; }
+      public FileInfo FileInfo { get; private set; }
+      public ImageFormat ImageFormat { get; private set; }
+      public Size Size { get; private set; }
+      public float Coef { get; private set; }
+
+      public ExportParams(Control imageHostControl, FileInfo fileInfo, ImageFormat imageFormat, Size size, float coef)
+      {
+        ImageHostControl = imageHostControl;
+        Size = size;
+        FileInfo = fileInfo;
+        ImageFormat = imageFormat;
+        Coef = coef;
+      }
+    }
+
+    public static void Export(BackgroundWorker worker, ExportParams exportParams)
+    {
+      using (var bitmap = new Bitmap(exportParams.Size.Width, exportParams.Size.Height))
       {
         using (var graphics = Graphics.FromImage(bitmap))
         {
           graphics.CompositingMode = CompositingMode.SourceCopy;
           _Progress(worker);
 
-          _DrawBackground(bitmap, graphics, panel);
+          _DrawBackground(bitmap, graphics, exportParams.ImageHostControl);
           _Progress(worker);
 
-          _DrawImages(worker, bitmap, graphics, panel, coef);
+          _DrawImages(worker, bitmap, graphics, exportParams.ImageHostControl, exportParams.Coef);
         }
 
-        _SaveImage(bitmap, fileInfo, imageFormat);
+        _SaveImage(bitmap, exportParams.FileInfo, exportParams.ImageFormat);
         _Progress(worker);
       }
     }
 
     #region Background
 
-    private static void _DrawBackground(Bitmap bitmap, Graphics graphics, Panel panel)
+    private static void _DrawBackground(Bitmap bitmap, Graphics graphics, Control imageHostControl)
     {
-      if (panel.BackgroundImage == null)
-        _SetBackgroundColor(bitmap, graphics, panel.BackColor);
+      if (imageHostControl.BackgroundImage == null)
+        _SetBackgroundColor(bitmap, graphics, imageHostControl.BackColor);
       else
-        _SetBackgroundImage(bitmap, graphics, panel.BackgroundImage, panel.BackgroundImageLayout);
+        _SetBackgroundImage(bitmap, graphics, imageHostControl.BackgroundImage, imageHostControl.BackgroundImageLayout);
     }
 
     private static void _SetBackgroundColor(Bitmap bitmap, Graphics graphics, Color backColor)
@@ -66,12 +84,12 @@ namespace FotoFox.Logic
 
     #region Images
 
-    private static void _DrawImages(BackgroundWorker worker, Bitmap bitmap, Graphics graphics, Panel panel, float coef)
+    private static void _DrawImages(BackgroundWorker worker, Bitmap bitmap, Graphics graphics, Control imageHostControl, float coef)
     {
-      if(panel.Controls.Count == 0)
+      if (imageHostControl.Controls.Count == 0)
         return;
 
-      _DrawControl(worker, graphics, panel.Controls[0], new Rectangle(0, 0, bitmap.Width, bitmap.Height), coef);
+      _DrawControl(worker, graphics, imageHostControl.Controls[0], new Rectangle(0, 0, bitmap.Width, bitmap.Height), coef);
     }
 
     private static void _DrawControl(BackgroundWorker worker, Graphics graphics, Control control, RectangleF rectangle, float coef)
@@ -109,19 +127,21 @@ namespace FotoFox.Logic
 
     private static RectangleF _GetSubRectangle(RectangleF rectangle, SplitterPanel panel, float coef)
     {
-        var newRectangle = new RectangleF(
-            rectangle.X + panel.Location.X * coef,
-            rectangle.Y + panel.Location.Y * coef,
-            (panel.Size.Width + 2) * coef,
-            (panel.Size.Height + 2) * coef);
+      var newRectangle = new RectangleF(
+          rectangle.X + panel.Location.X * coef,
+          rectangle.Y + panel.Location.Y * coef,
+          (panel.Size.Width + 2) * coef,
+          (panel.Size.Height + 2) * coef);
+        
+      //TODO Magic detected
 
-        if (Math.Abs(newRectangle.Height - rectangle.Height) < 3)
-            newRectangle.Height = rectangle.Height;
+      if (Math.Abs(newRectangle.Height - rectangle.Height) < 3)
+          newRectangle.Height = rectangle.Height;
 
-        if (Math.Abs(newRectangle.Width - rectangle.Width) < 3)
-            newRectangle.Width = rectangle.Width;
+      if (Math.Abs(newRectangle.Width - rectangle.Width) < 3)
+          newRectangle.Width = rectangle.Width;
 
-        return newRectangle;
+      return newRectangle;
     }
 
     #endregion
