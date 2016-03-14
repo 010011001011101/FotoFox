@@ -38,7 +38,7 @@ namespace FotoFox.Logic
       if (pictureBox == null) return;
 
       var isMainPanel = _HostControl.Equals(control);
-      control.ContextMenu = isMainPanel
+      control.ContextMenuStrip = isMainPanel
           ? _ContextMenuManager.PanelContextMenu
           : _ContextMenuManager.SplitPanelContextMenu;
       control.Controls.Remove(pictureBox);
@@ -56,7 +56,7 @@ namespace FotoFox.Logic
       var pictureBox = new ExPictureBox.ExPictureBox(image)
         {
             Dock = DockStyle.Fill,
-            ContextMenu = fromMainPanel
+            ContextMenuStrip = fromMainPanel
                 ? _ContextMenuManager.ImageContextMenu
                 : _ContextMenuManager.SplitImagePanelContextMenu
         };

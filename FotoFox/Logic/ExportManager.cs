@@ -150,10 +150,17 @@ namespace FotoFox.Logic
 
     private static void _SaveImage(Bitmap bitmap, FileInfo fileInfo, ImageFormat imageFormat)
     {
-      if(fileInfo.Exists)
-        fileInfo.Delete();
+      try
+      {
+        if (fileInfo.Exists)
+          fileInfo.Delete();
 
-      bitmap.Save(fileInfo.FullName, imageFormat);
+        bitmap.Save(fileInfo.FullName, imageFormat);
+      }
+      catch (Exception e)
+      {
+        MessageBox.Show(@"Ошибка создания картинки!", e.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
     }
 
     #endregion

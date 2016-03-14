@@ -82,7 +82,7 @@
       this.ExportBtn.Anchor = System.Windows.Forms.AnchorStyles.Left;
       this.TableLayoutPanel.SetColumnSpan(this.ExportBtn, 2);
       this.ExportBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-      this.ExportBtn.Image = global::FotoFox.Properties.Resources.wizard_9948;
+      this.ExportBtn.Image = global::FotoFox.Properties.Resources.wizard;
       this.ExportBtn.Location = new System.Drawing.Point(612, 66);
       this.ExportBtn.Name = "ExportBtn";
       this.ExportBtn.Size = new System.Drawing.Size(158, 26);
@@ -103,7 +103,7 @@
       // BrowseBtn
       // 
       this.BrowseBtn.Anchor = System.Windows.Forms.AnchorStyles.Left;
-      this.BrowseBtn.Image = global::FotoFox.Properties.Resources.folder_magnify_8999;
+      this.BrowseBtn.Image = global::FotoFox.Properties.Resources.folder;
       this.BrowseBtn.Location = new System.Drawing.Point(508, 65);
       this.BrowseBtn.Name = "BrowseBtn";
       this.BrowseBtn.Size = new System.Drawing.Size(33, 28);

@@ -72,7 +72,7 @@
       // 
       // BrowseBtn
       // 
-      this.BrowseBtn.Image = global::FotoFox.Properties.Resources.folder_magnify_8999;
+      this.BrowseBtn.Image = global::FotoFox.Properties.Resources.folder;
       this.BrowseBtn.Location = new System.Drawing.Point(322, 3);
       this.BrowseBtn.Name = "BrowseBtn";
       this.BrowseBtn.Size = new System.Drawing.Size(30, 26);

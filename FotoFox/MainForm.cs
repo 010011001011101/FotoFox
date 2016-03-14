@@ -22,7 +22,7 @@ namespace FotoFox
       _InitializeManagers();
       _InitializeCommonControls();
 
-      MainPanel.ContextMenu = _ContextMenuManager.PanelContextMenu;
+      MainPanel.ContextMenuStrip = _ContextMenuManager.PanelContextMenu;
       DragDropManager.InitForControl(MainPanel, image => _ImageManager.AddImage(MainPanel, image));
     }
 

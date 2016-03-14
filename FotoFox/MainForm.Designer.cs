@@ -39,11 +39,8 @@
       this.label3 = new System.Windows.Forms.Label();
       this.BackColorP = new System.Windows.Forms.Panel();
       this.NewPanelColorP = new System.Windows.Forms.Panel();
-      this.BackColorBtn = new System.Windows.Forms.Button();
-      this.NewPanelColorBtn = new System.Windows.Forms.Button();
       this.SplitterWidthTB = new System.Windows.Forms.TextBox();
       this.TransparentPanelCB = new System.Windows.Forms.CheckBox();
-      this.BackGroundColorBtn = new System.Windows.Forms.Button();
       this.SizeGB = new System.Windows.Forms.GroupBox();
       this.SizeTable = new System.Windows.Forms.TableLayoutPanel();
       this.SizeStatusFP = new System.Windows.Forms.FlowLayoutPanel();
@@ -57,9 +54,12 @@
       this.HightN = new System.Windows.Forms.NumericUpDown();
       this.ByWidthRB = new System.Windows.Forms.RadioButton();
       this.ByHightRB = new System.Windows.Forms.RadioButton();
+      this.ValidationErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+      this.BackColorBtn = new System.Windows.Forms.Button();
+      this.NewPanelColorBtn = new System.Windows.Forms.Button();
+      this.BackGroundColorBtn = new System.Windows.Forms.Button();
       this.SetProportionBtn = new System.Windows.Forms.Button();
       this.ExportBtn = new System.Windows.Forms.Button();
-      this.ValidationErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
       this.TableLayoutPanel.SuspendLayout();
       this.SplittersGB.SuspendLayout();
       this.SpllitersTable.SuspendLayout();
@@ -94,7 +94,6 @@
       // MainPanel
       // 
       this.MainPanel.BackColor = System.Drawing.Color.LightGray;
-      this.MainPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.TableLayoutPanel.SetColumnSpan(this.MainPanel, 3);
       this.MainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
       this.MainPanel.Location = new System.Drawing.Point(0, 0);
@@ -194,28 +193,6 @@
       this.NewPanelColorP.Size = new System.Drawing.Size(24, 20);
       this.NewPanelColorP.TabIndex = 2;
       // 
-      // BackColorBtn
-      // 
-      this.BackColorBtn.Anchor = System.Windows.Forms.AnchorStyles.Left;
-      this.BackColorBtn.Image = global::FotoFox.Properties.Resources.palette_6845;
-      this.BackColorBtn.Location = new System.Drawing.Point(121, 35);
-      this.BackColorBtn.Name = "BackColorBtn";
-      this.BackColorBtn.Size = new System.Drawing.Size(25, 20);
-      this.BackColorBtn.TabIndex = 1;
-      this.BackColorBtn.UseVisualStyleBackColor = true;
-      this.BackColorBtn.Click += new System.EventHandler(this.BackColorBtn_Click);
-      // 
-      // NewPanelColorBtn
-      // 
-      this.NewPanelColorBtn.Anchor = System.Windows.Forms.AnchorStyles.Left;
-      this.NewPanelColorBtn.Image = global::FotoFox.Properties.Resources.palette_6845;
-      this.NewPanelColorBtn.Location = new System.Drawing.Point(121, 65);
-      this.NewPanelColorBtn.Name = "NewPanelColorBtn";
-      this.NewPanelColorBtn.Size = new System.Drawing.Size(25, 20);
-      this.NewPanelColorBtn.TabIndex = 7;
-      this.NewPanelColorBtn.UseVisualStyleBackColor = true;
-      this.NewPanelColorBtn.Click += new System.EventHandler(this.NewPanelColorBtn_Click);
-      // 
       // SplitterWidthTB
       // 
       this.SplitterWidthTB.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -240,20 +217,6 @@
       this.TransparentPanelCB.Text = "Прозрачные";
       this.TransparentPanelCB.UseVisualStyleBackColor = true;
       this.TransparentPanelCB.CheckedChanged += new System.EventHandler(this.TransparentPanelCB_CheckedChanged);
-      // 
-      // BackGroundColorBtn
-      // 
-      this.BackGroundColorBtn.Anchor = System.Windows.Forms.AnchorStyles.Left;
-      this.SpllitersTable.SetColumnSpan(this.BackGroundColorBtn, 2);
-      this.BackGroundColorBtn.Image = global::FotoFox.Properties.Resources.folder_magnify_8999;
-      this.BackGroundColorBtn.Location = new System.Drawing.Point(155, 33);
-      this.BackGroundColorBtn.Name = "BackGroundColorBtn";
-      this.BackGroundColorBtn.Size = new System.Drawing.Size(113, 23);
-      this.BackGroundColorBtn.TabIndex = 3;
-      this.BackGroundColorBtn.Text = "Из картинки";
-      this.BackGroundColorBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.BackGroundColorBtn.UseVisualStyleBackColor = true;
-      this.BackGroundColorBtn.Click += new System.EventHandler(this.BackGroundColorBtn_Click);
       // 
       // SizeGB
       // 
@@ -423,10 +386,51 @@
       this.ByHightRB.Text = "По Высоте";
       this.ByHightRB.UseVisualStyleBackColor = true;
       // 
+      // ValidationErrorProvider
+      // 
+      this.ValidationErrorProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
+      this.ValidationErrorProvider.ContainerControl = this;
+      // 
+      // BackColorBtn
+      // 
+      this.BackColorBtn.Anchor = System.Windows.Forms.AnchorStyles.Left;
+      this.BackColorBtn.Image = global::FotoFox.Properties.Resources.palette_6845;
+      this.BackColorBtn.Location = new System.Drawing.Point(121, 35);
+      this.BackColorBtn.Name = "BackColorBtn";
+      this.BackColorBtn.Size = new System.Drawing.Size(25, 20);
+      this.BackColorBtn.TabIndex = 1;
+      this.BackColorBtn.UseVisualStyleBackColor = true;
+      this.BackColorBtn.Click += new System.EventHandler(this.BackColorBtn_Click);
+      // 
+      // NewPanelColorBtn
+      // 
+      this.NewPanelColorBtn.Anchor = System.Windows.Forms.AnchorStyles.Left;
+      this.NewPanelColorBtn.Image = global::FotoFox.Properties.Resources.palette_6845;
+      this.NewPanelColorBtn.Location = new System.Drawing.Point(121, 65);
+      this.NewPanelColorBtn.Name = "NewPanelColorBtn";
+      this.NewPanelColorBtn.Size = new System.Drawing.Size(25, 20);
+      this.NewPanelColorBtn.TabIndex = 7;
+      this.NewPanelColorBtn.UseVisualStyleBackColor = true;
+      this.NewPanelColorBtn.Click += new System.EventHandler(this.NewPanelColorBtn_Click);
+      // 
+      // BackGroundColorBtn
+      // 
+      this.BackGroundColorBtn.Anchor = System.Windows.Forms.AnchorStyles.Left;
+      this.SpllitersTable.SetColumnSpan(this.BackGroundColorBtn, 2);
+      this.BackGroundColorBtn.Image = global::FotoFox.Properties.Resources.folder;
+      this.BackGroundColorBtn.Location = new System.Drawing.Point(155, 33);
+      this.BackGroundColorBtn.Name = "BackGroundColorBtn";
+      this.BackGroundColorBtn.Size = new System.Drawing.Size(113, 23);
+      this.BackGroundColorBtn.TabIndex = 3;
+      this.BackGroundColorBtn.Text = "Из картинки";
+      this.BackGroundColorBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.BackGroundColorBtn.UseVisualStyleBackColor = true;
+      this.BackGroundColorBtn.Click += new System.EventHandler(this.BackGroundColorBtn_Click);
+      // 
       // SetProportionBtn
       // 
       this.SetProportionBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.SetProportionBtn.Image = global::FotoFox.Properties.Resources.image_resize_5062;
+      this.SetProportionBtn.Image = global::FotoFox.Properties.Resources.resize;
       this.SetProportionBtn.Location = new System.Drawing.Point(3, 29);
       this.SetProportionBtn.Name = "SetProportionBtn";
       this.SetProportionBtn.Size = new System.Drawing.Size(169, 25);
@@ -440,7 +444,6 @@
       // 
       this.ExportBtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
       this.ExportBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-      this.ExportBtn.Image = global::FotoFox.Properties.Resources._1355156345_orange_folder_image;
       this.ExportBtn.Location = new System.Drawing.Point(342, 617);
       this.ExportBtn.Name = "ExportBtn";
       this.ExportBtn.Size = new System.Drawing.Size(201, 35);
@@ -449,11 +452,6 @@
       this.ExportBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
       this.ExportBtn.UseVisualStyleBackColor = true;
       this.ExportBtn.Click += new System.EventHandler(this.ExportBtn_Click);
-      // 
-      // ValidationErrorProvider
-      // 
-      this.ValidationErrorProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
-      this.ValidationErrorProvider.ContainerControl = this;
       // 
       // MainForm
       // 

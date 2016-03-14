@@ -79,6 +79,12 @@
     <Compile Include="SetBackGroundImageDialog.Designer.cs">
       <DependentUpon>SetBackGroundImageDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="SpliterPositionToolWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SpliterPositionToolWindow.Designer.cs">
+      <DependentUpon>SpliterPositionToolWindow.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="ExportDialog.resx">
       <DependentUpon>ExportDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -97,6 +103,9 @@
     </Compile>
     <EmbeddedResource Include="SetBackGroundImageDialog.resx">
       <DependentUpon>SetBackGroundImageDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SpliterPositionToolWindow.resx">
+      <DependentUpon>SpliterPositionToolWindow.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -118,16 +127,11 @@
     <None Include="Resources\folder_magnify_8999.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\1355156319_orange-folder-image.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\1355156345_orange-folder-image.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\wizard_9948.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="%24this.Icon.ico" />
+    <None Include="Resources\remove.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
