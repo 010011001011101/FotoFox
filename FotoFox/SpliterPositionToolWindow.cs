@@ -64,6 +64,8 @@ namespace FotoFox
         SecondPanelLabel2.Text = @"Правая";
       }
 
+      FirstPanelExact.Maximum = SecondPanelExact.Maximum = _FullSize;
+
       _CalculateProportions();
 
       _CanReactOnValueChange = true;

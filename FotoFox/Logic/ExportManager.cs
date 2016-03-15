@@ -89,7 +89,13 @@ namespace FotoFox.Logic
       if (imageHostControl.Controls.Count == 0)
         return;
 
-      _DrawControl(worker, graphics, imageHostControl.Controls[0], new Rectangle(0, 0, bitmap.Width, bitmap.Height), coef);
+      var rect = new Rectangle(
+        imageHostControl.Padding.Left,
+        imageHostControl.Padding.Top,
+        bitmap.Width - imageHostControl.Padding.Left - imageHostControl.Padding.Right,
+        bitmap.Height - imageHostControl.Padding.Top - imageHostControl.Padding.Bottom);
+
+      _DrawControl(worker, graphics, imageHostControl.Controls[0], rect, coef);
     }
 
     private static void _DrawControl(BackgroundWorker worker, Graphics graphics, Control control, RectangleF rectangle, float coef)

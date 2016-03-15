@@ -122,7 +122,7 @@ namespace FotoFox.Logic
     private void _AddImageToContextMenu(ContextMenuStrip contextMenu)
     {
       contextMenu.Items.Add(
-        new ToolStripMenuItem("Добавить изображение", null, (s, e) =>
+        new ToolStripMenuItem("Добавить изображение", Properties.Resources.image_Add, (s, e) =>
         _ImageManager.AddImage(_GetSplitterPanel(s)))
       );
     }
@@ -130,7 +130,7 @@ namespace FotoFox.Logic
     private void _RemoveImageToContextMenu(ContextMenuStrip contextMenu)
     {
       contextMenu.Items.Add(
-        new ToolStripMenuItem("Удалить изображение", Properties.Resources.remove, (s, e) =>
+        new ToolStripMenuItem("Удалить изображение", Properties.Resources.image_Del, (s, e) =>
         _ImageManager.DeleteImage(_GetSplitterPanel(s)))  
       );                                 
     }
@@ -147,17 +147,17 @@ namespace FotoFox.Logic
     {
       var subMenu = new ToolStripMenuItem("Разделитель", null, new[]
       {
-        new ToolStripMenuItem("Установить вручную", null, _ManualSplitSet),
-        new ToolStripMenuItem("Установить 50% на 50% (1:1)", null, (s,e) =>
+        new ToolStripMenuItem("Установить вручную", Properties.Resources.pencil, _ManualSplitSet),
+        new ToolStripMenuItem("Установить [50% - 50%]", Properties.Resources._11, (s,e) =>
           _SplitterManager.SetProportions(_GetSplitter(s), 50)),
-        new ToolStripMenuItem("Установить 25% на 75% (1:4)", null, (s,e) =>
-          _SplitterManager.SetProportions(_GetSplitter(s), 25)),
-        new ToolStripMenuItem("Установить 75% на 25% (4:1)", null, (s,e) =>
-          _SplitterManager.SetProportions(_GetSplitter(s), 75)),
-        new ToolStripMenuItem("Установить 33.3% на 66.6% (1:2)", null, (s,e) =>
+        new ToolStripMenuItem("Установить [33% - 66%]", Properties.Resources._12, (s,e) =>
           _SplitterManager.SetProportions(_GetSplitter(s), 33.3)),
-        new ToolStripMenuItem("Установить 66.6% на 33.3% (2:1)", null, (s,e) =>
-          _SplitterManager.SetProportions(_GetSplitter(s), 66.6))
+        new ToolStripMenuItem("Установить [66% - 33%]", Properties.Resources._21, (s,e) =>
+          _SplitterManager.SetProportions(_GetSplitter(s), 66.6)),
+        new ToolStripMenuItem("Установить [25% - 75%]", Properties.Resources._14, (s,e) =>
+          _SplitterManager.SetProportions(_GetSplitter(s), 25)),
+        new ToolStripMenuItem("Установить [75% - 25%]", Properties.Resources._41, (s,e) =>
+          _SplitterManager.SetProportions(_GetSplitter(s), 75))
       });
 
       subMenu.DropDownItems.Add(new ToolStripSeparator());
@@ -186,9 +186,9 @@ namespace FotoFox.Logic
     {
       contextMenu.Items.AddRange(new[]
       {
-        new ToolStripMenuItem("Добавить горизонтальный разделитель", null, (s,e) => 
+        new ToolStripMenuItem("Добавить горизонтальный разделитель", Properties.Resources.split_Hor, (s,e) => 
           _SplitterManager.AddSplitter(_GetSplitterPanel(s), Orientation.Horizontal)),
-        new ToolStripMenuItem("Добавить вертикальный разделитель", null, (s,e) =>
+        new ToolStripMenuItem("Добавить вертикальный разделитель", Properties.Resources.split_Vert, (s,e) =>
           _SplitterManager.AddSplitter(_GetSplitterPanel(s), Orientation.Vertical))                                   
       });
     }

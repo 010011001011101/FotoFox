@@ -38,11 +38,16 @@ namespace FotoFox
       _ContextMenuManager.Initialize(_SplitterManager, _ImageManager);
     }
 
-    protected override void OnLoad(EventArgs eventArgs)
+    private void MainForm_Load(object sender, EventArgs e)
     {
-      base.OnLoad(eventArgs);
       _DisplaySizeLabels();
-      Resize += (s, e) => _DisplaySizeLabels();
+      _SetIndentsMaximum();
+    }
+
+    private void MainForm_Resize(object sender, EventArgs e)
+    {
+      _DisplaySizeLabels();
+      _SetIndentsMaximum();
     }
 
     #region Common Controls
@@ -82,7 +87,7 @@ namespace FotoFox
 
     private void BackColorBtn_Click(object sender, EventArgs e)
     {
-      var backColor = _AskForColor();
+      var backColor = _AskForColor(BackColorP);
       if(!backColor.HasValue) return;
 
       if(MainPanel.BackgroundImage != null)
@@ -106,7 +111,7 @@ namespace FotoFox
 
     private void NewPanelColorBtn_Click(object sender, EventArgs e)
     {
-      var newPanelColor = _AskForColor();
+      var newPanelColor = _AskForColor(NewPanelColorP);
       if (!newPanelColor.HasValue) return;
 
       _SplitterManager.SplittersNewPanelColor = newPanelColor.Value;
@@ -118,7 +123,7 @@ namespace FotoFox
       _SplitterManager.SplittersNewPanelColor = TransparentPanelCB.Checked
         ? Color.Transparent
         : NewPanelColorP.BackColor;
-      NewPanelColorBtn.Enabled = !TransparentPanelCB.Checked;
+      NewPanelColorP.Enabled = !TransparentPanelCB.Checked;
     }
 
     private void SplitterWidthTB_KeyDown(object sender, KeyEventArgs e)
@@ -130,10 +135,10 @@ namespace FotoFox
       }
     }
 
-    private Color? _AskForColor()
+    private Color? _AskForColor(IWin32Window parent = null)
     {
       using (var dialog = new ColorDialog { AnyColor = true })
-        return dialog.ShowDialog(this) == DialogResult.OK
+        return dialog.ShowDialog(parent ?? this) == DialogResult.OK
             ? (Color?)dialog.Color
             : null;
     }
@@ -159,6 +164,25 @@ namespace FotoFox
       var neSize = _SizeManager.CalculateNewSize(ByWidthRB.Checked, ByHightRB.Checked, WidthN.Value, HightN.Value);
           
       Size += neSize - MainPanel.Size;
+    }
+
+    #endregion
+
+    #region Indents
+
+    private void _SetIndentsMaximum()
+    {
+      IndentLeft.Maximum = IndentRight.Maximum = MainPanel.Width;
+      IndentTop.Maximum = IndentBottom.Maximum = MainPanel.Height;
+    }
+
+    private void Indent_ValueChanged(object sender, EventArgs e)
+    {
+      MainPanel.Padding = new Padding(
+        (int)IndentLeft.Value,
+        (int)IndentTop.Value,
+        (int)IndentRight.Value,
+        (int)IndentBottom.Value);
     }
 
     #endregion

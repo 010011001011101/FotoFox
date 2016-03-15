@@ -131,6 +131,20 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="%24this.Icon.ico" />
+    <None Include="Resources\top.png" />
+    <None Include="Resources\right.png" />
+    <None Include="Resources\left.png" />
+    <None Include="Resources\bottom.png" />
+    <None Include="Resources\14.png" />
+    <None Include="Resources\41.png" />
+    <None Include="Resources\21.png" />
+    <None Include="Resources\12.png" />
+    <None Include="Resources\11.png" />
+    <None Include="Resources\pencil.png" />
+    <None Include="Resources\split_Vert.png" />
+    <None Include="Resources\split_Hor.png" />
+    <None Include="Resources\image_Add.png" />
+    <None Include="Resources\image_Del.png" />
     <None Include="Resources\remove.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
