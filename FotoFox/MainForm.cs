@@ -41,13 +41,11 @@ namespace FotoFox
     private void MainForm_Load(object sender, EventArgs e)
     {
       _DisplaySizeLabels();
-      _SetIndentsMaximum();
     }
 
     private void MainForm_Resize(object sender, EventArgs e)
     {
       _DisplaySizeLabels();
-      _SetIndentsMaximum();
     }
 
     #region Common Controls
@@ -162,6 +160,8 @@ namespace FotoFox
 
     private void _DisplaySizeLabels()
     {
+      if (_SizeManager == null) return;
+
       Text = string.Format("FotoFox ({0})", _SizeManager.SizeString);
       SizeL.Text = _SizeManager.SizeString;
       Size2L.Text = string.Format("({0})", _SizeManager.ProportionString);
@@ -182,12 +182,6 @@ namespace FotoFox
     #endregion
 
     #region Indents
-
-    private void _SetIndentsMaximum()
-    {
-      IndentLeft.Maximum = IndentRight.Maximum = MainPanel.Width;
-      IndentTop.Maximum = IndentBottom.Maximum = MainPanel.Height;
-    }
 
     private void Indent_ValueChanged(object sender, EventArgs e)
     {
