@@ -8,10 +8,18 @@ namespace FotoFox.Logic
     private readonly Control _HostControl;
     private ContextMenuManager _ContextMenuManager;
 
+    public int DefaultRoundCornerA { get; set; }
+    public int DefaultRoundCornerB { get; set; }
+    public bool DefaultCornersEnable { get; set; }
+
 
     public ImageManager(Control hostControl)
     {
       _HostControl = hostControl;
+
+      DefaultRoundCornerA = 6;
+      DefaultRoundCornerB = 12;
+      DefaultCornersEnable = true;
     }
 
     public void Initialize(ContextMenuManager contextMenuManager)
@@ -53,7 +61,7 @@ namespace FotoFox.Logic
 
     public bool SetRoundCornersMode(Panel panel, ExPictureBox.ExPictureBox pictureBox)
     {
-      pictureBox.SetRoundCorners(!pictureBox.RoundCornersEnable, pictureBox.RoundCornerA, pictureBox.RoundCornerB);
+      RoundedCornersToolWindow.ShowForPictureBox(pictureBox);
 
       return pictureBox.RoundCornersEnable;
     }
@@ -61,13 +69,16 @@ namespace FotoFox.Logic
     private Control _CreatePictureBox(Image image, bool fromMainPanel)
     {
       var pictureBox = new ExPictureBox.ExPictureBox(image)
-        {
-            Dock = DockStyle.Fill,
-            ContextMenuStrip = fromMainPanel
-                ? _ContextMenuManager.CreateImageContextMenu()
-                : _ContextMenuManager.CreateSplitImagePanelContextMenu()
-        };
+      {
+          Dock = DockStyle.Fill,
+      };
 
+      pictureBox.SetRoundCorners(DefaultCornersEnable, DefaultRoundCornerA, DefaultRoundCornerB);
+
+      pictureBox.ContextMenuStrip = fromMainPanel
+        ? _ContextMenuManager.CreateImageContextMenu(pictureBox)
+        : _ContextMenuManager.CreateSplitImagePanelContextMenu(pictureBox);
+      
       DragDropManager.InitForControl(pictureBox, pictureBox.ResetImage);
 
       return pictureBox;

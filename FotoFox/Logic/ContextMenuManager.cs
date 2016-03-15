@@ -36,13 +36,13 @@ namespace FotoFox.Logic
       return menu;
     }
 
-    public ContextMenuStrip CreateImageContextMenu()
+    public ContextMenuStrip CreateImageContextMenu(ExPictureBox.ExPictureBox pic)
     {
       var menu = _CreateContextMenu();
       _CommonToContextMenu(menu);
       _AddSpliterToContextMenu(menu);
-      _FullImageModeToContextMenu(menu);
-      _RoundCornersModeToContextMenu(menu);
+      _FullImageModeToContextMenu(menu, pic);
+      _RoundCornersModeToContextMenu(menu, pic);
       _RemoveImageToContextMenu(menu);
 
       menu.Opening += Menu_Opening;
@@ -71,15 +71,15 @@ namespace FotoFox.Logic
       return menu;
     }
 
-    public ContextMenuStrip CreateSplitImagePanelContextMenu()
+    public ContextMenuStrip CreateSplitImagePanelContextMenu(ExPictureBox.ExPictureBox pic)
     {
       var menu = _CreateContextMenu();
       _CommonToContextMenu(menu);
       _AddSpliterToContextMenu(menu);
       _SplitControlToContextMenu(menu);
       _AddSpliterToContextMenu(menu);
-      _FullImageModeToContextMenu(menu);
-      _RoundCornersModeToContextMenu(menu);
+      _FullImageModeToContextMenu(menu, pic);
+      _RoundCornersModeToContextMenu(menu, pic);
       _RemoveImageToContextMenu(menu);
       
       menu.Opening += Menu_Opening;
@@ -112,19 +112,21 @@ namespace FotoFox.Logic
       );                                 
     }
 
-    private void _FullImageModeToContextMenu(ContextMenuStrip contextMenu)
+    private void _FullImageModeToContextMenu(ContextMenuStrip contextMenu, ExPictureBox.ExPictureBox pic)
     {
       contextMenu.Items.Add(
         new ToolStripMenuItem("Растянуть оригинальное изображение", Properties.Resources.resize,
           (s, e) => _ImageMenuAction(s, _ImageManager.SetFullImageMode))
+          { Checked = pic.FullImageMode }
       );  
     }
 
-    private void _RoundCornersModeToContextMenu(ContextMenuStrip contextMenu)
+    private void _RoundCornersModeToContextMenu(ContextMenuStrip contextMenu, ExPictureBox.ExPictureBox pic)
     {
       contextMenu.Items.Add(
-        new ToolStripMenuItem("Закругленные углы", Properties.Resources.curve,
+        new ToolStripMenuItem("Округленные углы", Properties.Resources.curve,
           (s, e) => _ImageMenuAction(s, _ImageManager.SetRoundCornersMode))
+          { Checked = pic.RoundCornersEnable }
       );
     }
 

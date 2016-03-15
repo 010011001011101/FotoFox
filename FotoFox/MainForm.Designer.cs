@@ -41,7 +41,6 @@
       this.BackColorP = new System.Windows.Forms.Panel();
       this.NewPanelColorP = new System.Windows.Forms.Panel();
       this.TransparentPanelCB = new System.Windows.Forms.CheckBox();
-      this.BackGroundColorBtn = new System.Windows.Forms.Button();
       this.SplitterWidthTB = new System.Windows.Forms.TextBox();
       this.SizeGB = new System.Windows.Forms.GroupBox();
       this.SizeTable = new System.Windows.Forms.TableLayoutPanel();
@@ -52,7 +51,6 @@
       this.SizePropFP2 = new System.Windows.Forms.FlowLayoutPanel();
       this.ByWidthRB = new System.Windows.Forms.RadioButton();
       this.ByHightRB = new System.Windows.Forms.RadioButton();
-      this.SetProportionBtn = new System.Windows.Forms.Button();
       this.SizePropFP1 = new System.Windows.Forms.FlowLayoutPanel();
       this.WidthN = new System.Windows.Forms.NumericUpDown();
       this.label8 = new System.Windows.Forms.Label();
@@ -63,14 +61,23 @@
       this.IndentLeft = new System.Windows.Forms.NumericUpDown();
       this.IndentRight = new System.Windows.Forms.NumericUpDown();
       this.IndentBottom = new System.Windows.Forms.NumericUpDown();
-      this.PicLeft = new System.Windows.Forms.PictureBox();
-      this.PicTop = new System.Windows.Forms.PictureBox();
-      this.PicRight = new System.Windows.Forms.PictureBox();
-      this.PicBottom = new System.Windows.Forms.PictureBox();
       this.ExportBtn = new System.Windows.Forms.Button();
       this.ValidationErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
       this.ControlsTable = new System.Windows.Forms.TableLayoutPanel();
       this.ControlsPanel = new System.Windows.Forms.Panel();
+      this.BackGroundColorBtn = new System.Windows.Forms.Button();
+      this.PicLeft = new System.Windows.Forms.PictureBox();
+      this.PicTop = new System.Windows.Forms.PictureBox();
+      this.PicRight = new System.Windows.Forms.PictureBox();
+      this.PicBottom = new System.Windows.Forms.PictureBox();
+      this.SetProportionBtn = new System.Windows.Forms.Button();
+      this.RoundedCornersGB = new System.Windows.Forms.GroupBox();
+      this.CornersTable = new System.Windows.Forms.TableLayoutPanel();
+      this.EnableCornersCB = new System.Windows.Forms.CheckBox();
+      this.label4 = new System.Windows.Forms.Label();
+      this.label5 = new System.Windows.Forms.Label();
+      this.CornersA = new System.Windows.Forms.NumericUpDown();
+      this.CornersB = new System.Windows.Forms.NumericUpDown();
       this.TableLayoutPanel.SuspendLayout();
       this.ControlsFlow.SuspendLayout();
       this.SplittersGB.SuspendLayout();
@@ -88,13 +95,17 @@
       ((System.ComponentModel.ISupportInitialize)(this.IndentLeft)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.IndentRight)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.IndentBottom)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.ValidationErrorProvider)).BeginInit();
+      this.ControlsTable.SuspendLayout();
+      this.ControlsPanel.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.PicLeft)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.PicTop)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.PicRight)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.PicBottom)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.ValidationErrorProvider)).BeginInit();
-      this.ControlsTable.SuspendLayout();
-      this.ControlsPanel.SuspendLayout();
+      this.RoundedCornersGB.SuspendLayout();
+      this.CornersTable.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.CornersA)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.CornersB)).BeginInit();
       this.SuspendLayout();
       // 
       // TableLayoutPanel
@@ -126,6 +137,7 @@
       // 
       this.ControlsFlow.Controls.Add(this.SplittersGB);
       this.ControlsFlow.Controls.Add(this.IndentsGB);
+      this.ControlsFlow.Controls.Add(this.RoundedCornersGB);
       this.ControlsFlow.Controls.Add(this.SizeGB);
       this.ControlsFlow.Dock = System.Windows.Forms.DockStyle.Fill;
       this.ControlsFlow.Location = new System.Drawing.Point(0, 0);
@@ -240,20 +252,6 @@
       this.TransparentPanelCB.UseVisualStyleBackColor = true;
       this.TransparentPanelCB.CheckedChanged += new System.EventHandler(this.TransparentPanelCB_CheckedChanged);
       // 
-      // BackGroundColorBtn
-      // 
-      this.SpllitersTable.SetColumnSpan(this.BackGroundColorBtn, 2);
-      this.BackGroundColorBtn.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.BackGroundColorBtn.Image = global::FotoFox.Properties.Resources.image_Add;
-      this.BackGroundColorBtn.Location = new System.Drawing.Point(91, 33);
-      this.BackGroundColorBtn.Name = "BackGroundColorBtn";
-      this.BackGroundColorBtn.Size = new System.Drawing.Size(90, 24);
-      this.BackGroundColorBtn.TabIndex = 3;
-      this.BackGroundColorBtn.Text = "Картинка";
-      this.BackGroundColorBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.BackGroundColorBtn.UseVisualStyleBackColor = true;
-      this.BackGroundColorBtn.Click += new System.EventHandler(this.BackGroundColorBtn_Click);
-      // 
       // SplitterWidthTB
       // 
       this.SplitterWidthTB.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
@@ -268,7 +266,7 @@
       // SizeGB
       // 
       this.SizeGB.Controls.Add(this.SizeTable);
-      this.SizeGB.Location = new System.Drawing.Point(3, 227);
+      this.SizeGB.Location = new System.Drawing.Point(3, 305);
       this.SizeGB.Name = "SizeGB";
       this.SizeGB.Size = new System.Drawing.Size(190, 130);
       this.SizeGB.TabIndex = 1;
@@ -374,19 +372,6 @@
       this.ByHightRB.TabIndex = 3;
       this.ByHightRB.Text = "По Высоте";
       this.ByHightRB.UseVisualStyleBackColor = true;
-      // 
-      // SetProportionBtn
-      // 
-      this.SetProportionBtn.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.SetProportionBtn.Image = global::FotoFox.Properties.Resources.resize;
-      this.SetProportionBtn.Location = new System.Drawing.Point(3, 82);
-      this.SetProportionBtn.Name = "SetProportionBtn";
-      this.SetProportionBtn.Size = new System.Drawing.Size(178, 26);
-      this.SetProportionBtn.TabIndex = 4;
-      this.SetProportionBtn.Text = "Установить размер окна";
-      this.SetProportionBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.SetProportionBtn.UseVisualStyleBackColor = true;
-      this.SetProportionBtn.Click += new System.EventHandler(this.SetProportionBtn_Click);
       // 
       // SizePropFP1
       // 
@@ -523,6 +508,65 @@
       this.IndentBottom.TabIndex = 3;
       this.IndentBottom.ValueChanged += new System.EventHandler(this.Indent_ValueChanged);
       // 
+      // ExportBtn
+      // 
+      this.ExportBtn.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.ExportBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+      this.ExportBtn.Location = new System.Drawing.Point(3, 577);
+      this.ExportBtn.Name = "ExportBtn";
+      this.ExportBtn.Size = new System.Drawing.Size(191, 32);
+      this.ExportBtn.TabIndex = 2;
+      this.ExportBtn.Text = "Экспорт в картинку";
+      this.ExportBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.ExportBtn.UseVisualStyleBackColor = true;
+      this.ExportBtn.Click += new System.EventHandler(this.ExportBtn_Click);
+      // 
+      // ValidationErrorProvider
+      // 
+      this.ValidationErrorProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
+      this.ValidationErrorProvider.ContainerControl = this;
+      // 
+      // ControlsTable
+      // 
+      this.ControlsTable.ColumnCount = 1;
+      this.ControlsTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+      this.ControlsTable.Controls.Add(this.ControlsFlow, 0, 0);
+      this.ControlsTable.Controls.Add(this.ExportBtn, 0, 1);
+      this.ControlsTable.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.ControlsTable.Location = new System.Drawing.Point(0, 0);
+      this.ControlsTable.Margin = new System.Windows.Forms.Padding(0);
+      this.ControlsTable.Name = "ControlsTable";
+      this.ControlsTable.RowCount = 2;
+      this.ControlsTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+      this.ControlsTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
+      this.ControlsTable.Size = new System.Drawing.Size(197, 612);
+      this.ControlsTable.TabIndex = 4;
+      // 
+      // ControlsPanel
+      // 
+      this.ControlsPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.ControlsPanel.Controls.Add(this.ControlsTable);
+      this.ControlsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.ControlsPanel.Location = new System.Drawing.Point(856, 0);
+      this.ControlsPanel.Margin = new System.Windows.Forms.Padding(0);
+      this.ControlsPanel.Name = "ControlsPanel";
+      this.ControlsPanel.Size = new System.Drawing.Size(199, 614);
+      this.ControlsPanel.TabIndex = 4;
+      // 
+      // BackGroundColorBtn
+      // 
+      this.SpllitersTable.SetColumnSpan(this.BackGroundColorBtn, 2);
+      this.BackGroundColorBtn.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.BackGroundColorBtn.Image = global::FotoFox.Properties.Resources.image_Add;
+      this.BackGroundColorBtn.Location = new System.Drawing.Point(91, 33);
+      this.BackGroundColorBtn.Name = "BackGroundColorBtn";
+      this.BackGroundColorBtn.Size = new System.Drawing.Size(90, 24);
+      this.BackGroundColorBtn.TabIndex = 3;
+      this.BackGroundColorBtn.Text = "Картинка";
+      this.BackGroundColorBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.BackGroundColorBtn.UseVisualStyleBackColor = true;
+      this.BackGroundColorBtn.Click += new System.EventHandler(this.BackGroundColorBtn_Click);
+      // 
       // PicLeft
       // 
       this.PicLeft.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -569,50 +613,119 @@
       this.PicBottom.TabIndex = 7;
       this.PicBottom.TabStop = false;
       // 
-      // ExportBtn
+      // SetProportionBtn
       // 
-      this.ExportBtn.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.ExportBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-      this.ExportBtn.Location = new System.Drawing.Point(3, 577);
-      this.ExportBtn.Name = "ExportBtn";
-      this.ExportBtn.Size = new System.Drawing.Size(191, 32);
-      this.ExportBtn.TabIndex = 2;
-      this.ExportBtn.Text = "Экспорт в картинку";
-      this.ExportBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.ExportBtn.UseVisualStyleBackColor = true;
-      this.ExportBtn.Click += new System.EventHandler(this.ExportBtn_Click);
+      this.SetProportionBtn.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.SetProportionBtn.Image = global::FotoFox.Properties.Resources.resize;
+      this.SetProportionBtn.Location = new System.Drawing.Point(3, 82);
+      this.SetProportionBtn.Name = "SetProportionBtn";
+      this.SetProportionBtn.Size = new System.Drawing.Size(178, 26);
+      this.SetProportionBtn.TabIndex = 4;
+      this.SetProportionBtn.Text = "Установить размер окна";
+      this.SetProportionBtn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.SetProportionBtn.UseVisualStyleBackColor = true;
+      this.SetProportionBtn.Click += new System.EventHandler(this.SetProportionBtn_Click);
       // 
-      // ValidationErrorProvider
+      // RoundedCornersGB
       // 
-      this.ValidationErrorProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
-      this.ValidationErrorProvider.ContainerControl = this;
+      this.RoundedCornersGB.Controls.Add(this.CornersTable);
+      this.RoundedCornersGB.Location = new System.Drawing.Point(3, 227);
+      this.RoundedCornersGB.Name = "RoundedCornersGB";
+      this.RoundedCornersGB.Size = new System.Drawing.Size(190, 72);
+      this.RoundedCornersGB.TabIndex = 3;
+      this.RoundedCornersGB.TabStop = false;
+      this.RoundedCornersGB.Text = "Округление углов";
       // 
-      // ControlsTable
+      // CornersTable
       // 
-      this.ControlsTable.ColumnCount = 1;
-      this.ControlsTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-      this.ControlsTable.Controls.Add(this.ControlsFlow, 0, 0);
-      this.ControlsTable.Controls.Add(this.ExportBtn, 0, 1);
-      this.ControlsTable.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.ControlsTable.Location = new System.Drawing.Point(0, 0);
-      this.ControlsTable.Margin = new System.Windows.Forms.Padding(0);
-      this.ControlsTable.Name = "ControlsTable";
-      this.ControlsTable.RowCount = 2;
-      this.ControlsTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-      this.ControlsTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
-      this.ControlsTable.Size = new System.Drawing.Size(197, 612);
-      this.ControlsTable.TabIndex = 4;
+      this.CornersTable.ColumnCount = 4;
+      this.CornersTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 27F));
+      this.CornersTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+      this.CornersTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 27F));
+      this.CornersTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+      this.CornersTable.Controls.Add(this.EnableCornersCB, 0, 0);
+      this.CornersTable.Controls.Add(this.label4, 0, 1);
+      this.CornersTable.Controls.Add(this.label5, 2, 1);
+      this.CornersTable.Controls.Add(this.CornersA, 1, 1);
+      this.CornersTable.Controls.Add(this.CornersB, 3, 1);
+      this.CornersTable.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.CornersTable.Location = new System.Drawing.Point(3, 16);
+      this.CornersTable.Name = "CornersTable";
+      this.CornersTable.RowCount = 2;
+      this.CornersTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
+      this.CornersTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+      this.CornersTable.Size = new System.Drawing.Size(184, 53);
+      this.CornersTable.TabIndex = 0;
       // 
-      // ControlsPanel
+      // EnableCornersCB
       // 
-      this.ControlsPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-      this.ControlsPanel.Controls.Add(this.ControlsTable);
-      this.ControlsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.ControlsPanel.Location = new System.Drawing.Point(856, 0);
-      this.ControlsPanel.Margin = new System.Windows.Forms.Padding(0);
-      this.ControlsPanel.Name = "ControlsPanel";
-      this.ControlsPanel.Size = new System.Drawing.Size(199, 614);
-      this.ControlsPanel.TabIndex = 4;
+      this.EnableCornersCB.AutoSize = true;
+      this.EnableCornersCB.Checked = true;
+      this.EnableCornersCB.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.CornersTable.SetColumnSpan(this.EnableCornersCB, 4);
+      this.EnableCornersCB.Location = new System.Drawing.Point(3, 3);
+      this.EnableCornersCB.Name = "EnableCornersCB";
+      this.EnableCornersCB.Size = new System.Drawing.Size(170, 16);
+      this.EnableCornersCB.TabIndex = 0;
+      this.EnableCornersCB.Text = "Округление новых картинок";
+      this.EnableCornersCB.UseVisualStyleBackColor = true;
+      // 
+      // label4
+      // 
+      this.label4.Anchor = System.Windows.Forms.AnchorStyles.Right;
+      this.label4.AutoSize = true;
+      this.label4.Location = new System.Drawing.Point(4, 31);
+      this.label4.Name = "label4";
+      this.label4.Size = new System.Drawing.Size(20, 13);
+      this.label4.TabIndex = 1;
+      this.label4.Text = "A :";
+      this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+      // 
+      // label5
+      // 
+      this.label5.Anchor = System.Windows.Forms.AnchorStyles.Right;
+      this.label5.AutoSize = true;
+      this.label5.Location = new System.Drawing.Point(96, 31);
+      this.label5.Name = "label5";
+      this.label5.Size = new System.Drawing.Size(20, 13);
+      this.label5.TabIndex = 2;
+      this.label5.Text = "B :";
+      // 
+      // CornersA
+      // 
+      this.CornersA.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+      this.CornersA.Location = new System.Drawing.Point(30, 27);
+      this.CornersA.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+      this.CornersA.Name = "CornersA";
+      this.CornersA.Size = new System.Drawing.Size(59, 20);
+      this.CornersA.TabIndex = 3;
+      this.CornersA.Value = new decimal(new int[] {
+            6,
+            0,
+            0,
+            0});
+      // 
+      // CornersB
+      // 
+      this.CornersB.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+      this.CornersB.Location = new System.Drawing.Point(122, 27);
+      this.CornersB.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+      this.CornersB.Name = "CornersB";
+      this.CornersB.Size = new System.Drawing.Size(59, 20);
+      this.CornersB.TabIndex = 4;
+      this.CornersB.Value = new decimal(new int[] {
+            12,
+            0,
+            0,
+            0});
       // 
       // MainForm
       // 
@@ -648,13 +761,18 @@
       ((System.ComponentModel.ISupportInitialize)(this.IndentLeft)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.IndentRight)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.IndentBottom)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.ValidationErrorProvider)).EndInit();
+      this.ControlsTable.ResumeLayout(false);
+      this.ControlsPanel.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.PicLeft)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.PicTop)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.PicRight)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.PicBottom)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.ValidationErrorProvider)).EndInit();
-      this.ControlsTable.ResumeLayout(false);
-      this.ControlsPanel.ResumeLayout(false);
+      this.RoundedCornersGB.ResumeLayout(false);
+      this.CornersTable.ResumeLayout(false);
+      this.CornersTable.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.CornersA)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.CornersB)).EndInit();
       this.ResumeLayout(false);
 
         }
@@ -702,6 +820,13 @@
         private System.Windows.Forms.PictureBox PicBottom;
         private System.Windows.Forms.TableLayoutPanel ControlsTable;
         private System.Windows.Forms.Panel ControlsPanel;
+        private System.Windows.Forms.GroupBox RoundedCornersGB;
+        private System.Windows.Forms.TableLayoutPanel CornersTable;
+        private System.Windows.Forms.CheckBox EnableCornersCB;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.NumericUpDown CornersA;
+        private System.Windows.Forms.NumericUpDown CornersB;
     }
 }
 

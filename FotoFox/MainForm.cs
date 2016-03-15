@@ -57,6 +57,8 @@ namespace FotoFox
       SplitterWidthTB.Text = _SplitterManager.SplittersWidth.ToString(CultureInfo.InvariantCulture);
       _RefreshSplittersBackColor();
       _RefreshSplittersNewPanelColor();
+
+      _InitializeCornersControl();
     }
 
     private void _RefreshSplittersBackColor()
@@ -67,6 +69,17 @@ namespace FotoFox
     private void _RefreshSplittersNewPanelColor()
     {
       NewPanelColorP.BackColor = _SplitterManager.SplittersNewPanelColor;
+    }
+
+    private void _InitializeCornersControl()
+    {
+      EnableCornersCB.Checked = _ImageManager.DefaultCornersEnable;
+      CornersA.Value = _ImageManager.DefaultRoundCornerA;
+      CornersB.Value = _ImageManager.DefaultRoundCornerB;
+
+      EnableCornersCB.CheckedChanged += (s, e) => _ImageManager.DefaultCornersEnable = EnableCornersCB.Checked;
+      CornersA.ValueChanged += (s, e) => _ImageManager.DefaultRoundCornerA = (int)CornersA.Value;
+      CornersB.ValueChanged += (s, e) => _ImageManager.DefaultRoundCornerB = (int)CornersB.Value;
     }
 
     private void SplitterWidthText_Validating(object sender, CancelEventArgs e)

@@ -34,6 +34,9 @@ namespace FotoFox.ExPictureBox
       RoundCornerA = a;
       RoundCornerB = b;
 
+      if (RoundCornerA <= 0 || RoundCornerB <= 0)
+        RoundCornersEnable = false;
+
       Invalidate();
     }
 
