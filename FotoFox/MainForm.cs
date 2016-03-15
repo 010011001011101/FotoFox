@@ -72,12 +72,10 @@ namespace FotoFox
     private void _InitializeCornersControl()
     {
       EnableCornersCB.Checked = _ImageManager.DefaultCornersEnable;
-      CornersA.Value = _ImageManager.DefaultRoundCornerA;
-      CornersB.Value = _ImageManager.DefaultRoundCornerB;
+      CornersR.Value = _ImageManager.DefaultRoundCornerR;
 
       EnableCornersCB.CheckedChanged += (s, e) => _ImageManager.DefaultCornersEnable = EnableCornersCB.Checked;
-      CornersA.ValueChanged += (s, e) => _ImageManager.DefaultRoundCornerA = (int)CornersA.Value;
-      CornersB.ValueChanged += (s, e) => _ImageManager.DefaultRoundCornerB = (int)CornersB.Value;
+      CornersR.ValueChanged += (s, e) => _ImageManager.DefaultRoundCornerR = (int)CornersR.Value;
     }
 
     private void SplitterWidthText_Validating(object sender, CancelEventArgs e)

@@ -32,8 +32,7 @@ namespace FotoFox
     private void _InitFromPictureBox()
     {
       EnableCB.Checked = _PictureBox.RoundCornersEnable;
-      A.Value = _PictureBox.RoundCornerA;
-      B.Value = _PictureBox.RoundCornerB;
+      R.Value = _PictureBox.RoundCornerR;
 
       _CanReactOnValueChange = true;
     }
@@ -42,7 +41,7 @@ namespace FotoFox
     {
       if (!_CanReactOnValueChange) return;
 
-      _PictureBox.SetRoundCorners(EnableCB.Checked, (int)A.Value, (int)B.Value);
+      _PictureBox.SetRoundCorners(EnableCB.Checked, (int)R.Value);
     }
   }
 }

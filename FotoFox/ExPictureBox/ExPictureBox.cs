@@ -12,8 +12,7 @@ namespace FotoFox.ExPictureBox
     private Point _MouseStartDragPoint;
     private bool _IgnoreFirstMouseMove = true;//TODO Убрать индусизм
 
-    public int RoundCornerA { get; private set; }
-    public int RoundCornerB { get; private set; }
+    public int RoundCornerR { get; private set; }
     public bool RoundCornersEnable { get; private set; }
 
 
@@ -28,13 +27,12 @@ namespace FotoFox.ExPictureBox
       }
     }
 
-    public void SetRoundCorners(bool enable, int a, int b)
+    public void SetRoundCorners(bool enable, int r)
     {
       RoundCornersEnable = enable;
-      RoundCornerA = a;
-      RoundCornerB = b;
+      RoundCornerR = r;
 
-      if (RoundCornerA <= 0 || RoundCornerB <= 0)
+      if (RoundCornerR <= 0)
         RoundCornersEnable = false;
 
       Invalidate();
@@ -44,10 +42,6 @@ namespace FotoFox.ExPictureBox
     {
       _Image = image;
       base.DoubleBuffered = true;
-
-      //TODO
-      RoundCornerA = 6;
-      RoundCornerB = 12;
     }
 
     protected override void OnResize(EventArgs e)
@@ -123,36 +117,12 @@ namespace FotoFox.ExPictureBox
 
       using (var path = new GraphicsPath())
       {
-        var b = RoundCornerB * globalZoom;
-        var a = RoundCornerA * globalZoom;
-        var a1 = (float)(a * Math.Sin(Math.PI / 9));
-        var a2 = (float)(a * Math.Cos(Math.PI / 9));
+        var d = 2 * RoundCornerR * globalZoom;
 
-        path.AddCurve(new[] {
-          new PointF(dstRect.Right - b, dstRect.Top),
-          new PointF(dstRect.Right - a2, dstRect.Top + a1),
-          new PointF(dstRect.Right - a1, dstRect.Top + a2),
-          new PointF(dstRect.Right, dstRect.Top + b)
-        });
-        path.AddCurve(new[] {
-          new PointF(dstRect.Right, dstRect.Bottom - b),
-          new PointF(dstRect.Right - a1, dstRect.Bottom - a2),
-          new PointF(dstRect.Right - a2, dstRect.Bottom - a1),
-          new PointF(dstRect.Right - b, dstRect.Bottom)
-        });
-        path.AddCurve(new[] {
-          new PointF(dstRect.Left + b, dstRect.Bottom),
-          new PointF(dstRect.Left + a2, dstRect.Bottom - a1),
-          new PointF(dstRect.Left + a1, dstRect.Bottom - a2),
-          new PointF(dstRect.Left, dstRect.Bottom - b)
-        });
-        path.AddCurve(new[] {
-          new PointF(dstRect.Left, dstRect.Top + b),
-          new PointF(dstRect.Left + a1, dstRect.Top + a2),
-          new PointF(dstRect.Left + a2, dstRect.Top + a1),
-          new PointF(dstRect.Left + b, dstRect.Top)
-        });
-
+        path.AddArc(dstRect.Right - d, dstRect.Top, d, d, 270, 90);
+        path.AddArc(dstRect.Right - d, dstRect.Bottom - d, d, d, 0, 90);
+        path.AddArc(dstRect.Left, dstRect.Bottom - d, d, d, 90, 90);
+        path.AddArc(dstRect.Left, dstRect.Top, d, d, 180, 90);
         g.SetClip(path);
 
         drawAction();

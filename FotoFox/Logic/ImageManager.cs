@@ -8,8 +8,7 @@ namespace FotoFox.Logic
     private readonly Control _HostControl;
     private ContextMenuManager _ContextMenuManager;
 
-    public int DefaultRoundCornerA { get; set; }
-    public int DefaultRoundCornerB { get; set; }
+    public int DefaultRoundCornerR { get; set; }
     public bool DefaultCornersEnable { get; set; }
 
 
@@ -17,8 +16,7 @@ namespace FotoFox.Logic
     {
       _HostControl = hostControl;
 
-      DefaultRoundCornerA = 6;
-      DefaultRoundCornerB = 12;
+      DefaultRoundCornerR = 12;
       DefaultCornersEnable = true;
     }
 
@@ -73,7 +71,7 @@ namespace FotoFox.Logic
           Dock = DockStyle.Fill,
       };
 
-      pictureBox.SetRoundCorners(DefaultCornersEnable, DefaultRoundCornerA, DefaultRoundCornerB);
+      pictureBox.SetRoundCorners(DefaultCornersEnable, DefaultRoundCornerR);
 
       pictureBox.ContextMenuStrip = fromMainPanel
         ? _ContextMenuManager.CreateImageContextMenu(pictureBox)

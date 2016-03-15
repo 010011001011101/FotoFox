@@ -59,9 +59,7 @@
       this.CornersTable = new System.Windows.Forms.TableLayoutPanel();
       this.EnableCornersCB = new System.Windows.Forms.CheckBox();
       this.label4 = new System.Windows.Forms.Label();
-      this.label5 = new System.Windows.Forms.Label();
-      this.CornersA = new System.Windows.Forms.NumericUpDown();
-      this.CornersB = new System.Windows.Forms.NumericUpDown();
+      this.CornersR = new System.Windows.Forms.NumericUpDown();
       this.SizeGB = new System.Windows.Forms.GroupBox();
       this.SizeTable = new System.Windows.Forms.TableLayoutPanel();
       this.SizeStatusFP = new System.Windows.Forms.FlowLayoutPanel();
@@ -96,8 +94,7 @@
       ((System.ComponentModel.ISupportInitialize)(this.PicBottom)).BeginInit();
       this.RoundedCornersGB.SuspendLayout();
       this.CornersTable.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.CornersA)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.CornersB)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.CornersR)).BeginInit();
       this.SizeGB.SuspendLayout();
       this.SizeTable.SuspendLayout();
       this.SizeStatusFP.SuspendLayout();
@@ -475,16 +472,13 @@
       // 
       // CornersTable
       // 
-      this.CornersTable.ColumnCount = 4;
+      this.CornersTable.ColumnCount = 3;
       this.CornersTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 36F));
       this.CornersTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-      this.CornersTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 36F));
-      this.CornersTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+      this.CornersTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 146F));
       this.CornersTable.Controls.Add(this.EnableCornersCB, 0, 0);
       this.CornersTable.Controls.Add(this.label4, 0, 1);
-      this.CornersTable.Controls.Add(this.label5, 2, 1);
-      this.CornersTable.Controls.Add(this.CornersA, 1, 1);
-      this.CornersTable.Controls.Add(this.CornersB, 3, 1);
+      this.CornersTable.Controls.Add(this.CornersR, 1, 1);
       this.CornersTable.Dock = System.Windows.Forms.DockStyle.Fill;
       this.CornersTable.Location = new System.Drawing.Point(4, 19);
       this.CornersTable.Margin = new System.Windows.Forms.Padding(4);
@@ -500,7 +494,7 @@
       this.EnableCornersCB.AutoSize = true;
       this.EnableCornersCB.Checked = true;
       this.EnableCornersCB.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.CornersTable.SetColumnSpan(this.EnableCornersCB, 4);
+      this.CornersTable.SetColumnSpan(this.EnableCornersCB, 3);
       this.EnableCornersCB.Location = new System.Drawing.Point(4, 4);
       this.EnableCornersCB.Margin = new System.Windows.Forms.Padding(4);
       this.EnableCornersCB.Name = "EnableCornersCB";
@@ -513,59 +507,29 @@
       // 
       this.label4.Anchor = System.Windows.Forms.AnchorStyles.Right;
       this.label4.AutoSize = true;
-      this.label4.Location = new System.Drawing.Point(7, 38);
+      this.label4.Location = new System.Drawing.Point(6, 38);
       this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
       this.label4.Name = "label4";
-      this.label4.Size = new System.Drawing.Size(25, 17);
+      this.label4.Size = new System.Drawing.Size(26, 17);
       this.label4.TabIndex = 1;
-      this.label4.Text = "A :";
+      this.label4.Text = "R :";
       this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
       // 
-      // label5
+      // CornersR
       // 
-      this.label5.Anchor = System.Windows.Forms.AnchorStyles.Right;
-      this.label5.AutoSize = true;
-      this.label5.Location = new System.Drawing.Point(129, 38);
-      this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-      this.label5.Name = "label5";
-      this.label5.Size = new System.Drawing.Size(25, 17);
-      this.label5.TabIndex = 2;
-      this.label5.Text = "B :";
-      // 
-      // CornersA
-      // 
-      this.CornersA.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-      this.CornersA.Location = new System.Drawing.Point(40, 35);
-      this.CornersA.Margin = new System.Windows.Forms.Padding(4);
-      this.CornersA.Minimum = new decimal(new int[] {
+      this.CornersR.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+      this.CornersR.Location = new System.Drawing.Point(40, 35);
+      this.CornersR.Margin = new System.Windows.Forms.Padding(4);
+      this.CornersR.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-      this.CornersA.Name = "CornersA";
-      this.CornersA.Size = new System.Drawing.Size(78, 22);
-      this.CornersA.TabIndex = 3;
-      this.CornersA.Value = new decimal(new int[] {
+      this.CornersR.Name = "CornersR";
+      this.CornersR.Size = new System.Drawing.Size(55, 22);
+      this.CornersR.TabIndex = 3;
+      this.CornersR.Value = new decimal(new int[] {
             6,
-            0,
-            0,
-            0});
-      // 
-      // CornersB
-      // 
-      this.CornersB.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-      this.CornersB.Location = new System.Drawing.Point(162, 35);
-      this.CornersB.Margin = new System.Windows.Forms.Padding(4);
-      this.CornersB.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-      this.CornersB.Name = "CornersB";
-      this.CornersB.Size = new System.Drawing.Size(79, 22);
-      this.CornersB.TabIndex = 4;
-      this.CornersB.Value = new decimal(new int[] {
-            12,
             0,
             0,
             0});
@@ -816,8 +780,7 @@
       this.RoundedCornersGB.ResumeLayout(false);
       this.CornersTable.ResumeLayout(false);
       this.CornersTable.PerformLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.CornersA)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.CornersB)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.CornersR)).EndInit();
       this.SizeGB.ResumeLayout(false);
       this.SizeTable.ResumeLayout(false);
       this.SizeStatusFP.ResumeLayout(false);
@@ -880,9 +843,7 @@
         private System.Windows.Forms.TableLayoutPanel CornersTable;
         private System.Windows.Forms.CheckBox EnableCornersCB;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.NumericUpDown CornersA;
-        private System.Windows.Forms.NumericUpDown CornersB;
+        private System.Windows.Forms.NumericUpDown CornersR;
     }
 }
 
