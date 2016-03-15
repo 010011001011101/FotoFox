@@ -39,8 +39,8 @@ namespace FotoFox.Logic
 
       var isMainPanel = _HostControl.Equals(control);
       control.ContextMenuStrip = isMainPanel
-          ? _ContextMenuManager.PanelContextMenu
-          : _ContextMenuManager.SplitPanelContextMenu;
+          ? _ContextMenuManager.CreatePanelContextMenu()
+          : _ContextMenuManager.CreateSplitPanelContextMenu();
       control.Controls.Remove(pictureBox);
 
       pictureBox.Dispose();
@@ -51,14 +51,21 @@ namespace FotoFox.Logic
       return pictureBox.FullImageMode = !pictureBox.FullImageMode;
     }
 
+    public bool SetRoundCornersMode(Panel panel, ExPictureBox.ExPictureBox pictureBox)
+    {
+      pictureBox.SetRoundCorners(!pictureBox.RoundCornersEnable, pictureBox.RoundCornerA, pictureBox.RoundCornerB);
+
+      return pictureBox.RoundCornersEnable;
+    }
+
     private Control _CreatePictureBox(Image image, bool fromMainPanel)
     {
       var pictureBox = new ExPictureBox.ExPictureBox(image)
         {
             Dock = DockStyle.Fill,
             ContextMenuStrip = fromMainPanel
-                ? _ContextMenuManager.ImageContextMenu
-                : _ContextMenuManager.SplitImagePanelContextMenu
+                ? _ContextMenuManager.CreateImageContextMenu()
+                : _ContextMenuManager.CreateSplitImagePanelContextMenu()
         };
 
       DragDropManager.InitForControl(pictureBox, pictureBox.ResetImage);

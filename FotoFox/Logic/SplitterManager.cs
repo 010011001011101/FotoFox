@@ -103,13 +103,13 @@ namespace FotoFox.Logic
         Orientation = orientation,
         SplitterWidth = SplittersWidth,
         BackColor = Color.Transparent,
-        ContextMenuStrip = _ContextMenuManager.SplitContextMenu,
+        ContextMenuStrip = _ContextMenuManager.CreateSplitContextMenu(),
         Panel1 = {
-          ContextMenuStrip = _ContextMenuManager.SplitPanelContextMenu,
+          ContextMenuStrip = _ContextMenuManager.CreateSplitPanelContextMenu(),
             BackColor = SplittersNewPanelColor
         },
         Panel2 = {
-          ContextMenuStrip = _ContextMenuManager.SplitPanelContextMenu,
+          ContextMenuStrip = _ContextMenuManager.CreateSplitPanelContextMenu(),
             BackColor = SplittersNewPanelColor
         }
       };
@@ -132,10 +132,10 @@ namespace FotoFox.Logic
 
       _Splits.Remove(split);
       if (_HostControl.Equals(split.Parent))
-        split.Parent.ContextMenuStrip = _ContextMenuManager.PanelContextMenu;
+        split.Parent.ContextMenuStrip = _ContextMenuManager.CreatePanelContextMenu();
       else
       {
-        split.Parent.ContextMenuStrip = _ContextMenuManager.SplitPanelContextMenu;
+        split.Parent.ContextMenuStrip = _ContextMenuManager.CreateSplitPanelContextMenu();
         split.Parent.BackColor = SplittersNewPanelColor;
       }
       split.Parent.Controls.Remove(split);

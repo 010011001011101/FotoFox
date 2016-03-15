@@ -131,6 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="%24this.Icon.ico" />
+    <None Include="Resources\curve.png" />
     <None Include="Resources\top.png" />
     <None Include="Resources\right.png" />
     <None Include="Resources\left.png" />

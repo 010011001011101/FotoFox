@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace FotoFox.ExPictureBox
@@ -10,6 +11,11 @@ namespace FotoFox.ExPictureBox
     private ExRectangle _VisibleRect;
     private Point _MouseStartDragPoint;
     private bool _IgnoreFirstMouseMove = true;//TODO Убрать индусизм
+
+    public int RoundCornerA { get; private set; }
+    public int RoundCornerB { get; private set; }
+    public bool RoundCornersEnable { get; private set; }
+
 
     private bool _FullImageMode;
     public bool FullImageMode 
@@ -22,10 +28,23 @@ namespace FotoFox.ExPictureBox
       }
     }
 
+    public void SetRoundCorners(bool enable, int a, int b)
+    {
+      RoundCornersEnable = enable;
+      RoundCornerA = a;
+      RoundCornerB = b;
+
+      Invalidate();
+    }
+
     public ExPictureBox(Image image)
     {
       _Image = image;
       base.DoubleBuffered = true;
+
+      //TODO
+      RoundCornerA = 6;
+      RoundCornerB = 12;
     }
 
     protected override void OnResize(EventArgs e)
@@ -50,10 +69,10 @@ namespace FotoFox.ExPictureBox
       base.OnPaint(pe);
     }
 
-    public void DrawImage(Graphics g, RectangleF dstRect, bool fixOverSize = false)
+    public void DrawImage(Graphics g, RectangleF dstRect, bool fixOverSize = false, float globalZoom = 1)
     {
       if (FullImageMode)
-        g.DrawImage(_Image, dstRect);
+        MakeRoundCorners(g, dstRect, globalZoom, () => g.DrawImage(_Image, dstRect));
       else
       {
         var imageRect = _VisibleRect.GetDrawRectangle();
@@ -65,7 +84,7 @@ namespace FotoFox.ExPictureBox
           imageRect = _FixImageRectangle(imageRect);
         }
 
-        g.DrawImage(_Image, dstRect, imageRect, GraphicsUnit.Pixel);
+        MakeRoundCorners(g, dstRect, globalZoom, () => g.DrawImage(_Image, dstRect, imageRect, GraphicsUnit.Pixel));
       }
     }
 
@@ -89,6 +108,54 @@ namespace FotoFox.ExPictureBox
         imageRect.Height = _Image.Height - imageRect.Y;
 
       return imageRect;
+    }
+
+    public void MakeRoundCorners(Graphics g, RectangleF dstRect, float globalZoom, Action drawAction)
+    {
+      if (!RoundCornersEnable)
+      {
+        drawAction();
+        return;
+      }
+
+      using (var path = new GraphicsPath())
+      {
+        var b = RoundCornerB * globalZoom;
+        var a = RoundCornerA * globalZoom;
+        var a1 = (float)(a * Math.Sin(Math.PI / 9));
+        var a2 = (float)(a * Math.Cos(Math.PI / 9));
+
+        path.AddCurve(new[] {
+          new PointF(dstRect.Right - b, dstRect.Top),
+          new PointF(dstRect.Right - a2, dstRect.Top + a1),
+          new PointF(dstRect.Right - a1, dstRect.Top + a2),
+          new PointF(dstRect.Right, dstRect.Top + b)
+        });
+        path.AddCurve(new[] {
+          new PointF(dstRect.Right, dstRect.Bottom - b),
+          new PointF(dstRect.Right - a1, dstRect.Bottom - a2),
+          new PointF(dstRect.Right - a2, dstRect.Bottom - a1),
+          new PointF(dstRect.Right - b, dstRect.Bottom)
+        });
+        path.AddCurve(new[] {
+          new PointF(dstRect.Left + b, dstRect.Bottom),
+          new PointF(dstRect.Left + a2, dstRect.Bottom - a1),
+          new PointF(dstRect.Left + a1, dstRect.Bottom - a2),
+          new PointF(dstRect.Left, dstRect.Bottom - b)
+        });
+        path.AddCurve(new[] {
+          new PointF(dstRect.Left, dstRect.Top + b),
+          new PointF(dstRect.Left + a1, dstRect.Top + a2),
+          new PointF(dstRect.Left + a2, dstRect.Top + a1),
+          new PointF(dstRect.Left + b, dstRect.Top)
+        });
+
+        g.SetClip(path);
+
+        drawAction();
+
+        g.ResetClip();
+      }
     }
 
     public void ResetImage(Image image)

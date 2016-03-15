@@ -10,7 +10,6 @@ namespace FotoFox.Logic
     private readonly Control _HostControl;
     private SplitterManager _SplitterManager;
     private ImageManager _ImageManager;
-    private Control _ContextMenuSourceControl;
 
 
     public ContextMenuManager(Control hostControl)
@@ -24,14 +23,9 @@ namespace FotoFox.Logic
       _ImageManager = imageManager;
     }
 
-    #region Menus Propertys
+    #region Menus
 
-    private ContextMenuStrip _PanelContextMenu;
-    public ContextMenuStrip PanelContextMenu
-    {
-      get { return _PanelContextMenu ?? (_PanelContextMenu = _CreatePanelContextMenu()); }
-    }
-    private ContextMenuStrip _CreatePanelContextMenu()
+    public ContextMenuStrip CreatePanelContextMenu()
     {
       var menu = _CreateContextMenu();
       _CommonToContextMenu(menu);
@@ -42,29 +36,20 @@ namespace FotoFox.Logic
       return menu;
     }
 
-    private ContextMenuStrip _ImageContextMenu;
-    public ContextMenuStrip ImageContextMenu
-    {
-      get { return _ImageContextMenu ?? (_ImageContextMenu = _CreateImageContextMenu()); }
-    }
-    private ContextMenuStrip _CreateImageContextMenu()
+    public ContextMenuStrip CreateImageContextMenu()
     {
       var menu = _CreateContextMenu();
       _CommonToContextMenu(menu);
       _AddSpliterToContextMenu(menu);
       _FullImageModeToContextMenu(menu);
+      _RoundCornersModeToContextMenu(menu);
       _RemoveImageToContextMenu(menu);
 
       menu.Opening += Menu_Opening;
       return menu;
     }
 
-    private ContextMenuStrip _SplitContextMenu;
-    public ContextMenuStrip SplitContextMenu
-    {
-      get { return _SplitContextMenu ?? (_SplitContextMenu = _CreateSplitContextMenu()); }
-    }
-    private ContextMenuStrip _CreateSplitContextMenu()
+    public ContextMenuStrip CreateSplitContextMenu()
     {
       var menu = _CreateContextMenu();
       _SplitControlToContextMenu(menu);
@@ -73,12 +58,7 @@ namespace FotoFox.Logic
       return menu;
     }
 
-    private ContextMenuStrip _SplitPanelContextMenu;
-    public ContextMenuStrip SplitPanelContextMenu
-    {
-      get { return _SplitPanelContextMenu ?? (_SplitPanelContextMenu = _CreateSplitPanelContextMenu()); }
-    }
-    private ContextMenuStrip _CreateSplitPanelContextMenu()
+    public ContextMenuStrip CreateSplitPanelContextMenu()
     {
       var menu = _CreateContextMenu();
       _CommonToContextMenu(menu);
@@ -91,12 +71,7 @@ namespace FotoFox.Logic
       return menu;
     }
 
-    private ContextMenuStrip _SplitImagePanelContextMenu;
-    public ContextMenuStrip SplitImagePanelContextMenu
-    {
-      get { return _SplitImagePanelContextMenu ?? (_SplitImagePanelContextMenu = _CreateSplitImagePanelContextMenu()); }
-    }
-    private ContextMenuStrip _CreateSplitImagePanelContextMenu()
+    public ContextMenuStrip CreateSplitImagePanelContextMenu()
     {
       var menu = _CreateContextMenu();
       _CommonToContextMenu(menu);
@@ -104,15 +79,17 @@ namespace FotoFox.Logic
       _SplitControlToContextMenu(menu);
       _AddSpliterToContextMenu(menu);
       _FullImageModeToContextMenu(menu);
+      _RoundCornersModeToContextMenu(menu);
       _RemoveImageToContextMenu(menu);
       
       menu.Opening += Menu_Opening;
       return menu;
     }
 
-    private void Menu_Opening(object sender, CancelEventArgs e)
+    private static void Menu_Opening(object sender, CancelEventArgs e)
     {
-      _ContextMenuSourceControl = ((ContextMenuStrip)sender).SourceControl as Control;
+      var menu = ((ContextMenuStrip) sender);
+      menu.Tag = menu.SourceControl;
     }
 
     #endregion
@@ -141,6 +118,14 @@ namespace FotoFox.Logic
         new ToolStripMenuItem("Растянуть оригинальное изображение", Properties.Resources.resize,
           (s, e) => _ImageMenuAction(s, _ImageManager.SetFullImageMode))
       );  
+    }
+
+    private void _RoundCornersModeToContextMenu(ContextMenuStrip contextMenu)
+    {
+      contextMenu.Items.Add(
+        new ToolStripMenuItem("Закругленные углы", Properties.Resources.curve,
+          (s, e) => _ImageMenuAction(s, _ImageManager.SetRoundCornersMode))
+      );
     }
 
     private void _SplitControlToContextMenu(ContextMenuStrip contextMenu)
@@ -197,7 +182,7 @@ namespace FotoFox.Logic
     {
       var cMenu = new ContextMenuStrip();
 
-      cMenu.Opening += (s, e) => _SplitterManager.SetSelectionBorder(((ContextMenuStrip)s).SourceControl as Control, true);
+      cMenu.Opening += (s, e) => _SplitterManager.SetSelectionBorder(((ContextMenuStrip)s).SourceControl, true);
       cMenu.Closing += (s, e) => _SplitterManager.SetSelectionBorder(_GetControl(s), false);
 
       return cMenu;
@@ -230,7 +215,7 @@ namespace FotoFox.Logic
       return panel.Controls[0] as ExPictureBox.ExPictureBox;
     }
 
-    private SplitContainer _GetSplitter(object sender)
+    private static SplitContainer _GetSplitter(object sender)
     {
       var panel = _GetControl(sender);
       while (panel != null && !(panel is SplitContainer))
@@ -239,10 +224,19 @@ namespace FotoFox.Logic
       return panel as SplitContainer;
     }
 
-    private Control _GetControl(object sender)
+    private static Control _GetControl(object sender)
     {
-      // ибо нормального спсоба узнать контрол источник контекстного меню, в котором есть подменю - нельзя... ппц товарищи
-      return _ContextMenuSourceControl;
+      if (sender is ContextMenuStrip)
+        // ибо нормального спсоба узнать контрол источник контекстного меню, в котором есть подменю - нельзя... ппц товарищи
+         return (sender as ContextMenuStrip).Tag as Control;
+
+      if (sender is ToolStripItem)
+        return _GetControl((sender as ToolStripItem).GetCurrentParent());
+
+      if (sender is ToolStripDropDown)
+        return _GetControl((sender as ToolStripDropDown).OwnerItem);
+
+      return null;
     }
 
     #endregion
