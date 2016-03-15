@@ -16,15 +16,15 @@ namespace FotoFox.Logic
       public FileInfo FileInfo { get; private set; }
       public ImageFormat ImageFormat { get; private set; }
       public Size Size { get; private set; }
-      public float Coef { get; private set; }
+      public float GlobalZoom { get; private set; }
 
-      public ExportParams(Control imageHostControl, FileInfo fileInfo, ImageFormat imageFormat, Size size, float coef)
+      public ExportParams(Control imageHostControl, FileInfo fileInfo, ImageFormat imageFormat, Size size, float zoom)
       {
         ImageHostControl = imageHostControl;
         Size = size;
         FileInfo = fileInfo;
         ImageFormat = imageFormat;
-        Coef = coef;
+        GlobalZoom = zoom;
       }
     }
 
@@ -40,7 +40,7 @@ namespace FotoFox.Logic
           _DrawBackground(bitmap, graphics, exportParams.ImageHostControl);
           _Progress(worker);
 
-          _DrawImages(worker, bitmap, graphics, exportParams.ImageHostControl, exportParams.Coef);
+          _DrawImages(worker, bitmap, graphics, exportParams.ImageHostControl, exportParams.GlobalZoom);
         }
 
         _SaveImage(bitmap, exportParams.FileInfo, exportParams.ImageFormat);
@@ -84,27 +84,33 @@ namespace FotoFox.Logic
 
     #region Images
 
-    private static void _DrawImages(BackgroundWorker worker, Bitmap bitmap, Graphics graphics, Control imageHostControl, float coef)
+    private static void _DrawImages(BackgroundWorker worker, Bitmap bitmap, Graphics graphics, Control imageHostControl, float zoom)
     {
       if (imageHostControl.Controls.Count == 0)
         return;
 
-      _DrawControl(worker, graphics, imageHostControl.Controls[0], new Rectangle(0, 0, bitmap.Width, bitmap.Height), coef);
+      var rect = new RectangleF(
+        imageHostControl.Padding.Left * zoom,
+        imageHostControl.Padding.Top * zoom,
+        bitmap.Width - (imageHostControl.Padding.Left + imageHostControl.Padding.Right) * zoom,
+        bitmap.Height - (imageHostControl.Padding.Top + imageHostControl.Padding.Bottom) * zoom);
+
+      _DrawControl(worker, graphics, imageHostControl.Controls[0], rect, zoom);
     }
 
-    private static void _DrawControl(BackgroundWorker worker, Graphics graphics, Control control, RectangleF rectangle, float coef)
+    private static void _DrawControl(BackgroundWorker worker, Graphics graphics, Control control, RectangleF rectangle, float zoom)
     {
       if(control is ExPictureBox.ExPictureBox)
-        _DrawExPictureBox(worker, control as ExPictureBox.ExPictureBox, graphics, rectangle);
+        _DrawExPictureBox(worker, control as ExPictureBox.ExPictureBox, graphics, rectangle, zoom);
 
       if(control is SplitContainer)
-        _DrawSplitContainer(worker, control as SplitContainer, graphics, rectangle, coef);
+        _DrawSplitContainer(worker, control as SplitContainer, graphics, rectangle, zoom);
     }
 
     private static void _DrawExPictureBox(BackgroundWorker worker, ExPictureBox.ExPictureBox exPictureBox,
-      Graphics graphics, RectangleF rectangle)
+      Graphics graphics, RectangleF rectangle, float zoom)
     {
-      exPictureBox.DrawImage(graphics, rectangle, true);
+      exPictureBox.DrawImage(graphics, rectangle, true, zoom);
 
       _Progress(worker);
     }
@@ -150,10 +156,17 @@ namespace FotoFox.Logic
 
     private static void _SaveImage(Bitmap bitmap, FileInfo fileInfo, ImageFormat imageFormat)
     {
-      if(fileInfo.Exists)
-        fileInfo.Delete();
+      try
+      {
+        if (fileInfo.Exists)
+          fileInfo.Delete();
 
-      bitmap.Save(fileInfo.FullName, imageFormat);
+        bitmap.Save(fileInfo.FullName, imageFormat);
+      }
+      catch (Exception e)
+      {
+        MessageBox.Show(@"Ошибка создания картинки!", e.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
     }
 
     #endregion

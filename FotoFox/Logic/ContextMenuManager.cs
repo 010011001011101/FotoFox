@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Drawing;
+using System.ComponentModel;
 
 namespace FotoFox.Logic
 {
   public class ContextMenuManager
   {
-    private readonly Color _SelectColor = Color.Red;
-    private readonly Color _SubSelectColor = Color.Orange;
-
     private readonly Control _HostControl;
     private SplitterManager _SplitterManager;
     private ImageManager _ImageManager;
@@ -25,56 +23,42 @@ namespace FotoFox.Logic
       _ImageManager = imageManager;
     }
 
-    #region Menus Propertys
+    #region Menus
 
-    private ContextMenu _PanelContextMenu;
-    public ContextMenu PanelContextMenu
-    {
-      get { return _PanelContextMenu ?? (_PanelContextMenu = _CreatePanelContextMenu()); }
-    }
-    private ContextMenu _CreatePanelContextMenu()
+    public ContextMenuStrip CreatePanelContextMenu()
     {
       var menu = _CreateContextMenu();
       _CommonToContextMenu(menu);
       _AddSpliterToContextMenu(menu);
       _AddImageToContextMenu(menu);
+
+      menu.Opening += Menu_Opening;
       return menu;
     }
 
-    private ContextMenu _ImageContextMenu;
-    public ContextMenu ImageContextMenu
-    {
-      get { return _ImageContextMenu ?? (_ImageContextMenu = _CreateImageContextMenu()); }
-    }
-    private ContextMenu _CreateImageContextMenu()
+    public ContextMenuStrip CreateImageContextMenu(ExPictureBox.ExPictureBox pic)
     {
       var menu = _CreateContextMenu();
       _CommonToContextMenu(menu);
       _AddSpliterToContextMenu(menu);
+      _FullImageModeToContextMenu(menu, pic);
+      _RoundCornersModeToContextMenu(menu, pic);
       _RemoveImageToContextMenu(menu);
-      _AddSpliterToContextMenu(menu);
-      _FullImageModeToContextMenu(menu);
+
+      menu.Opening += Menu_Opening;
       return menu;
     }
 
-    private ContextMenu _SplitContextMenu;
-    public ContextMenu SplitContextMenu
-    {
-      get { return _SplitContextMenu ?? (_SplitContextMenu = _CreateSplitContextMenu()); }
-    }
-    private ContextMenu _CreateSplitContextMenu()
+    public ContextMenuStrip CreateSplitContextMenu()
     {
       var menu = _CreateContextMenu();
       _SplitControlToContextMenu(menu);
+
+      menu.Opening += Menu_Opening;
       return menu;
     }
 
-    private ContextMenu _SplitPanelContextMenu;
-    public ContextMenu SplitPanelContextMenu
-    {
-      get { return _SplitPanelContextMenu ?? (_SplitPanelContextMenu = _CreateSplitPanelContextMenu()); }
-    }
-    private ContextMenu _CreateSplitPanelContextMenu()
+    public ContextMenuStrip CreateSplitPanelContextMenu()
     {
       var menu = _CreateContextMenu();
       _CommonToContextMenu(menu);
@@ -82,177 +66,128 @@ namespace FotoFox.Logic
       _SplitControlToContextMenu(menu);
       _AddSpliterToContextMenu(menu);
       _AddImageToContextMenu(menu);
+
+      menu.Opening += Menu_Opening;
       return menu;
     }
 
-    private ContextMenu _SplitImagePanelContextMenu;
-    public ContextMenu SplitImagePanelContextMenu
-    {
-      get { return _SplitImagePanelContextMenu ?? (_SplitImagePanelContextMenu = _CreateSplitImagePanelContextMenu()); }
-    }
-    private ContextMenu _CreateSplitImagePanelContextMenu()
+    public ContextMenuStrip CreateSplitImagePanelContextMenu(ExPictureBox.ExPictureBox pic)
     {
       var menu = _CreateContextMenu();
       _CommonToContextMenu(menu);
       _AddSpliterToContextMenu(menu);
       _SplitControlToContextMenu(menu);
       _AddSpliterToContextMenu(menu);
+      _FullImageModeToContextMenu(menu, pic);
+      _RoundCornersModeToContextMenu(menu, pic);
       _RemoveImageToContextMenu(menu);
-      _AddSpliterToContextMenu(menu);
-      _FullImageModeToContextMenu(menu);
+      
+      menu.Opening += Menu_Opening;
       return menu;
+    }
+
+    private static void Menu_Opening(object sender, CancelEventArgs e)
+    {
+      var menu = ((ContextMenuStrip) sender);
+      menu.Tag = menu.SourceControl;
     }
 
     #endregion
 
     #region Menu Builder
 
-    private void _AddImageToContextMenu(ContextMenu contextMenu)
+    private void _AddImageToContextMenu(ContextMenuStrip contextMenu)
     {
-      contextMenu.MenuItems.Add(
-        new MenuItem("Добавить изображение", (s, e) =>
+      contextMenu.Items.Add(
+        new ToolStripMenuItem("Добавить изображение", Properties.Resources.image_Add, (s, e) =>
         _ImageManager.AddImage(_GetSplitterPanel(s)))
       );
     }
 
-    private void _RemoveImageToContextMenu(ContextMenu contextMenu)
+    private void _RemoveImageToContextMenu(ContextMenuStrip contextMenu)
     {
-      contextMenu.MenuItems.Add(
-        new MenuItem("Удалить изображение",(s, e) =>
+      contextMenu.Items.Add(
+        new ToolStripMenuItem("Удалить изображение", Properties.Resources.image_Del, (s, e) =>
         _ImageManager.DeleteImage(_GetSplitterPanel(s)))  
       );                                 
     }
 
-    private void _FullImageModeToContextMenu(ContextMenu contextMenu)
+    private void _FullImageModeToContextMenu(ContextMenuStrip contextMenu, ExPictureBox.ExPictureBox pic)
     {
-      contextMenu.MenuItems.Add(
-        new MenuItem("Растянуть оригинальное изображение",
+      contextMenu.Items.Add(
+        new ToolStripMenuItem("Растянуть оригинальное изображение", Properties.Resources.resize,
           (s, e) => _ImageMenuAction(s, _ImageManager.SetFullImageMode))
+          { Checked = pic.FullImageMode }
       );  
     }
 
-    private void _SplitControlToContextMenu(ContextMenu contextMenu)
+    private void _RoundCornersModeToContextMenu(ContextMenuStrip contextMenu, ExPictureBox.ExPictureBox pic)
     {
-      contextMenu.MenuItems.Add(
-        new MenuItem("Разделитель", new []
-        {
-          new MenuItem("Удалить", (s,e) =>
-              _SplitterManager.DeleteSplitter(_GetSplitter(s))),
-          new MenuItem("Установить 50% на 50% (1:1)", (s,e) =>
-              _SplitterManager.SetProportions(_GetSplitter(s), 50)),
-          new MenuItem("Установить 25% на 75% (1:4)", (s,e) =>
-              _SplitterManager.SetProportions(_GetSplitter(s), 25)),
-          new MenuItem("Установить 75% на 25% (4:1)", (s,e) =>
-              _SplitterManager.SetProportions(_GetSplitter(s), 75)),
-          new MenuItem("Установить 33.3% на 66.6% (1:2)", (s,e) =>
-              _SplitterManager.SetProportions(_GetSplitter(s), 33.3)),
-          new MenuItem("Установить 66.6% на 33.3% (2:1)", (s,e) =>
-              _SplitterManager.SetProportions(_GetSplitter(s), 66.6)),
-        })                                    
+      contextMenu.Items.Add(
+        new ToolStripMenuItem("Округленные углы", Properties.Resources.curve,
+          (s, e) => _ImageMenuAction(s, _ImageManager.SetRoundCornersMode))
+          { Checked = pic.RoundCornersEnable }
       );
     }
 
-    private static void _AddSpliterToContextMenu(ContextMenu contextMenu)
+    private void _SplitControlToContextMenu(ContextMenuStrip contextMenu)
     {
-      if (contextMenu.MenuItems.Count > 0)
-        contextMenu.MenuItems.Add(new MenuItem("-"));
+      var subMenu = new ToolStripMenuItem("Разделитель", null, new[]
+      {
+        new ToolStripMenuItem("Установить вручную", Properties.Resources.pencil, _ManualSplitSet),
+        new ToolStripMenuItem("Установить [50% - 50%]", Properties.Resources._11, (s,e) =>
+          _SplitterManager.SetProportions(_GetSplitter(s), 50)),
+        new ToolStripMenuItem("Установить [33% - 66%]", Properties.Resources._12, (s,e) =>
+          _SplitterManager.SetProportions(_GetSplitter(s), 33.3)),
+        new ToolStripMenuItem("Установить [66% - 33%]", Properties.Resources._21, (s,e) =>
+          _SplitterManager.SetProportions(_GetSplitter(s), 66.6)),
+        new ToolStripMenuItem("Установить [25% - 75%]", Properties.Resources._14, (s,e) =>
+          _SplitterManager.SetProportions(_GetSplitter(s), 25)),
+        new ToolStripMenuItem("Установить [75% - 25%]", Properties.Resources._41, (s,e) =>
+          _SplitterManager.SetProportions(_GetSplitter(s), 75))
+      });
+
+      subMenu.DropDownItems.Add(new ToolStripSeparator());
+
+      subMenu.DropDownItems.Add(new ToolStripMenuItem("Удалить", Properties.Resources.remove, (s,e) =>
+              _SplitterManager.DeleteSplitter(_GetSplitter(s))));
+
+      contextMenu.Items.Add(subMenu);
     }
 
-    private void _CommonToContextMenu(ContextMenu contextMenu)
+    private void _ManualSplitSet(object sender, EventArgs e)
     {
-      contextMenu.MenuItems.AddRange(new[]
+      var c = _GetControl(sender);
+      _SplitterManager.SetSelectionBorder(c, true);
+      SpliterPositionToolWindow.ShowForSplit(_GetSplitter(sender));
+      _SplitterManager.SetSelectionBorder(c, false);
+    }
+
+    private static void _AddSpliterToContextMenu(ContextMenuStrip contextMenu)
+    {
+      if (contextMenu.Items.Count > 0)
+        contextMenu.Items.Add(new ToolStripSeparator());
+    }
+
+    private void _CommonToContextMenu(ContextMenuStrip contextMenu)
+    {
+      contextMenu.Items.AddRange(new[]
       {
-        new MenuItem("Добавить горизонтальный разделитель", (s,e) => 
+        new ToolStripMenuItem("Добавить горизонтальный разделитель", Properties.Resources.split_Hor, (s,e) => 
           _SplitterManager.AddSplitter(_GetSplitterPanel(s), Orientation.Horizontal)),
-        new MenuItem("Добавить вертикальный разделитель", (s,e) =>
+        new ToolStripMenuItem("Добавить вертикальный разделитель", Properties.Resources.split_Vert, (s,e) =>
           _SplitterManager.AddSplitter(_GetSplitterPanel(s), Orientation.Vertical))                                   
       });
     }
 
-    private ContextMenu _CreateContextMenu()
+    private ContextMenuStrip _CreateContextMenu()
     {
-      var cMenu = new ContextMenu();
+      var cMenu = new ContextMenuStrip();
 
-      cMenu.Popup += (s,e) => _SetSelectionBorder(s, true);
-      cMenu.Collapse += (s, e) => _SetSelectionBorder(s, false);
+      cMenu.Opening += (s, e) => _SplitterManager.SetSelectionBorder(((ContextMenuStrip)s).SourceControl, true);
+      cMenu.Closing += (s, e) => _SplitterManager.SetSelectionBorder(_GetControl(s), false);
 
       return cMenu;
-    }
-
-    #endregion
-
-    #region Border
-
-    private void _SetSelectionBorder(object sender, bool borderVisible)
-    {
-      var control = _GetControl(sender);
-      if(control is SplitContainer)
-      {
-        _SetSubBorders((control as SplitContainer), borderVisible);
-        control.Refresh();
-        return;
-      }
-
-      var splitPanel = _GetSplitterPanel(sender) as SplitterPanel;
-      if (splitPanel == null) return;
-
-      _SetBorders(splitPanel, borderVisible);
-      splitPanel.Parent.Refresh();
-    }
-
-    private void _SetBorders(SplitterPanel panel, bool borderVisible)
-    {
-      _AddOnPaintEvent(panel, _BorderPaint, !borderVisible);
-
-      var splitContainer = (SplitContainer)panel.Parent;
-
-      _SetSubBorders(
-        splitContainer.Panel1.Equals(panel)
-          ? splitContainer.Panel2
-          : splitContainer.Panel1,
-        borderVisible);
-    }
-
-    private void _SetSubBorders(SplitterPanel panel, bool borderVisible)
-    {
-      var splitContainer = panel.Controls.Count > 0
-        ? panel.Controls[0] as SplitContainer
-        : null;
-
-      if (splitContainer != null)
-        _SetSubBorders(splitContainer, borderVisible);
-      else
-        _AddOnPaintEvent(panel, _SubBorderPaint, !borderVisible);
-    }
-
-    private void _SetSubBorders(SplitContainer split, bool borderVisible)
-    {
-      _SetSubBorders(split.Panel1, borderVisible);
-      _SetSubBorders(split.Panel2, borderVisible);
-    }
-
-    private static void _AddOnPaintEvent(Control control, PaintEventHandler drawDelegate, bool remove = false)
-    {
-      var controlToSubscribe = control.Controls.Count > 0
-                                 ? control.Controls[0]
-                                 : control;
-
-      if (remove)
-        controlToSubscribe.Paint -= drawDelegate;
-      else
-        controlToSubscribe.Paint += drawDelegate;
-    }
-
-    private void _BorderPaint(object sender, PaintEventArgs e)
-    {
-      using (var pen = new Pen(_SelectColor, 4))
-        e.Graphics.DrawRectangle(pen, e.ClipRectangle);
-    }
-
-    private void _SubBorderPaint(object sender, PaintEventArgs e)
-    {
-      using (var pen = new Pen(_SubSelectColor, 4))
-        e.Graphics.DrawRectangle(pen, e.ClipRectangle);
     }
 
     #endregion
@@ -261,7 +196,7 @@ namespace FotoFox.Logic
 
     private void _ImageMenuAction(object sender, Func<Panel, ExPictureBox.ExPictureBox, bool> imageActionDelegate)
     {
-      var menuItem = sender as MenuItem;
+      var menuItem = sender as ToolStripMenuItem;
       var panel = _GetSplitterPanel(sender);
       var pictureBox = _GetPictureBox(panel);
 
@@ -273,12 +208,7 @@ namespace FotoFox.Logic
 
     private Panel _GetSplitterPanel(object sender)
     {
-        var control = _GetControl(sender);
-        var panel = control as Panel ?? control.Parent as Panel;
-        while (panel != null && !_HostControl.Equals(panel) && !(panel is SplitterPanel))
-            panel = panel.Parent as Panel;
-
-        return panel;
+      return _SplitterManager.GetSplitterPanel(_GetControl(sender));
     }
 
     private static ExPictureBox.ExPictureBox _GetPictureBox(Panel panel)
@@ -289,23 +219,26 @@ namespace FotoFox.Logic
 
     private static SplitContainer _GetSplitter(object sender)
     {
-        var panel = _GetControl(sender);
-        while (panel != null && !(panel is SplitContainer))
-            panel = panel.Parent;
+      var panel = _GetControl(sender);
+      while (panel != null && !(panel is SplitContainer))
+          panel = panel.Parent;
 
-        return panel as SplitContainer;
+      return panel as SplitContainer;
     }
 
     private static Control _GetControl(object sender)
     {
-        ContextMenu contextMenu = null;
-        if (sender is ContextMenu)
-            contextMenu = sender as ContextMenu;
-        else if (sender is MenuItem)
-            contextMenu = (sender as MenuItem).GetContextMenu();
-        if (contextMenu == null) return null;
+      if (sender is ContextMenuStrip)
+        // ибо нормального спсоба узнать контрол источник контекстного меню, в котором есть подменю - нельзя... ппц товарищи
+         return (sender as ContextMenuStrip).Tag as Control;
 
-        return contextMenu.SourceControl;
+      if (sender is ToolStripItem)
+        return _GetControl((sender as ToolStripItem).GetCurrentParent());
+
+      if (sender is ToolStripDropDown)
+        return _GetControl((sender as ToolStripDropDown).OwnerItem);
+
+      return null;
     }
 
     #endregion

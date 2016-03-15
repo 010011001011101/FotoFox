@@ -8,10 +8,18 @@ namespace FotoFox.Logic
     private readonly Control _HostControl;
     private ContextMenuManager _ContextMenuManager;
 
+    public int DefaultRoundCornerA { get; set; }
+    public int DefaultRoundCornerB { get; set; }
+    public bool DefaultCornersEnable { get; set; }
+
 
     public ImageManager(Control hostControl)
     {
       _HostControl = hostControl;
+
+      DefaultRoundCornerA = 6;
+      DefaultRoundCornerB = 12;
+      DefaultCornersEnable = true;
     }
 
     public void Initialize(ContextMenuManager contextMenuManager)
@@ -38,9 +46,9 @@ namespace FotoFox.Logic
       if (pictureBox == null) return;
 
       var isMainPanel = _HostControl.Equals(control);
-      control.ContextMenu = isMainPanel
-          ? _ContextMenuManager.PanelContextMenu
-          : _ContextMenuManager.SplitPanelContextMenu;
+      control.ContextMenuStrip = isMainPanel
+          ? _ContextMenuManager.CreatePanelContextMenu()
+          : _ContextMenuManager.CreateSplitPanelContextMenu();
       control.Controls.Remove(pictureBox);
 
       pictureBox.Dispose();
@@ -51,16 +59,26 @@ namespace FotoFox.Logic
       return pictureBox.FullImageMode = !pictureBox.FullImageMode;
     }
 
+    public bool SetRoundCornersMode(Panel panel, ExPictureBox.ExPictureBox pictureBox)
+    {
+      RoundedCornersToolWindow.ShowForPictureBox(pictureBox);
+
+      return pictureBox.RoundCornersEnable;
+    }
+
     private Control _CreatePictureBox(Image image, bool fromMainPanel)
     {
       var pictureBox = new ExPictureBox.ExPictureBox(image)
-        {
-            Dock = DockStyle.Fill,
-            ContextMenu = fromMainPanel
-                ? _ContextMenuManager.ImageContextMenu
-                : _ContextMenuManager.SplitImagePanelContextMenu
-        };
+      {
+          Dock = DockStyle.Fill,
+      };
 
+      pictureBox.SetRoundCorners(DefaultCornersEnable, DefaultRoundCornerA, DefaultRoundCornerB);
+
+      pictureBox.ContextMenuStrip = fromMainPanel
+        ? _ContextMenuManager.CreateImageContextMenu(pictureBox)
+        : _ContextMenuManager.CreateSplitImagePanelContextMenu(pictureBox);
+      
       DragDropManager.InitForControl(pictureBox, pictureBox.ResetImage);
 
       return pictureBox;
